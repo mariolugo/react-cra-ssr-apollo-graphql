@@ -5,6 +5,7 @@
   "private": true,
   "dependencies": {
     "apollo-boost": "^0.1.13",
+    "apollo-link-context": "^1.0.8",
     "connected-react-router": "^4.3.0",
     "cookie-parser": "^1.4.3",
     "forcedomain": "^1.0.0",
