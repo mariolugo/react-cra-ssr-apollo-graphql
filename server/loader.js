@@ -5,6 +5,7 @@ import fs from 'fs';
 // React requirements
 import React from 'react';
 import { renderToString } from 'react-dom/server';
+import { renderToStringWithData } from 'react-apollo';
 import Helmet from 'react-helmet';
 import { Provider } from 'react-redux';
 import { StaticRouter } from 'react-router';
@@ -18,6 +19,12 @@ import manifest from '../build/asset-manifest.json';
 
 // Some optional Redux functions related to user authentication
 import { setCurrentUser, logoutUser } from '../src/modules/auth';
+
+import { ApolloProvider } from 'react-apollo';
+import { ApolloClient } from 'apollo-client';
+import { createHttpLink } from 'apollo-link-http';
+import { InMemoryCache } from 'apollo-cache-inmemory';
+import 'isomorphic-fetch';
 
 // LOADER
 export default (req, res) => {
@@ -40,6 +47,17 @@ export default (req, res) => {
 
     return data;
   };
+
+  const httpLink = createHttpLink({
+    uri: 'http://localhost:4000'
+  });
+
+  const client = new ApolloClient({
+    link: httpLink,
+    ssrForceFetchDelay: 100,
+    ssrMode: true,
+    cache: new InMemoryCache()
+  });
 
   // Load in our HTML file from our build
   fs.readFile(
@@ -82,14 +100,16 @@ export default (req, res) => {
         then loaded into the correct components and sent as a Promise to be handled below.
       */
       frontloadServerRender(() =>
-        renderToString(
+        renderToStringWithData(
           <Loadable.Capture report={m => modules.push(m)}>
             <Provider store={store}>
-              <StaticRouter location={req.url} context={context}>
-                <Frontload isServer>
-                  <App />
-                </Frontload>
-              </StaticRouter>
+              <ApolloProvider client={client}>
+                <StaticRouter location={req.url} context={context}>
+                  <Frontload isServer>
+                    <App />
+                  </Frontload>
+                </StaticRouter>
+              </ApolloProvider>
             </Provider>
           </Loadable.Capture>
         )

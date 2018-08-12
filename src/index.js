@@ -5,6 +5,10 @@ import Loadable from 'react-loadable';
 import { Frontload } from 'react-frontload';
 import { ConnectedRouter } from 'connected-react-router';
 import createStore from './store';
+import { ApolloProvider } from 'react-apollo';
+import { ApolloClient } from 'apollo-client';
+import { createHttpLink } from 'apollo-link-http';
+import { InMemoryCache } from 'apollo-cache-inmemory';
 
 import App from './app/app';
 import './index.css';
@@ -12,15 +16,26 @@ import './index.css';
 // Create a store and get back itself and its history object
 const { store, history } = createStore();
 
+const httpLink = createHttpLink({
+  uri: 'http://localhost:4000'
+});
+
+const client = new ApolloClient({
+  link: httpLink,
+  cache: new InMemoryCache().restore(window.__APOLLO_STATE__)
+});
+
 // Running locally, we should run on a <ConnectedRouter /> rather than on a <StaticRouter /> like on the server
 // Let's also let React Frontload explicitly know we're not rendering on the server here
 const Application = (
   <Provider store={store}>
-    <ConnectedRouter history={history}>
-      <Frontload noServerRender>
-        <App />
-      </Frontload>
-    </ConnectedRouter>
+    <ApolloProvider client={client}>
+      <ConnectedRouter history={history}>
+          <Frontload noServerRender>
+            <App />
+          </Frontload>
+      </ConnectedRouter>
+    </ApolloProvider>
   </Provider>
 );
 

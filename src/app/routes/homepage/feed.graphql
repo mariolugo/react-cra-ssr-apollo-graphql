@@ -1,0 +1,10 @@
+{
+  feed {
+    links {
+      id
+      createdAt
+      description
+      url
+    }
+  }
+}
