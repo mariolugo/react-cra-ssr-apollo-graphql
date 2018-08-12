@@ -1,0 +1,7 @@
+datamodel: datamodel.graphql
+secret: StarLord
+hooks:
+  post-deploy:
+    - yarn graphql get-schema --project database
+
+endpoint: https://eu1.prisma.sh/mario-lugo-28cf57/database/dev
