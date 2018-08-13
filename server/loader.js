@@ -25,9 +25,14 @@ import { ApolloClient } from 'apollo-client';
 import { createHttpLink } from 'apollo-link-http';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import 'isomorphic-fetch';
+import { split } from 'apollo-link'
+import { WebSocketLink } from 'apollo-link-ws'
+import { getMainDefinition } from 'apollo-utilities'
 
 // LOADER
 export default (req, res) => {
+
+  console.log({req});
   /*
     A simple helper function to prepare the HTML markup. This loads:
       - Page title
@@ -52,11 +57,40 @@ export default (req, res) => {
     uri: 'http://localhost:4000'
   });
 
+  const wsLink = new WebSocketLink({
+    uri: `ws://localhost:4000`,
+    options: {
+      reconnect: true,
+      connectionParams: {
+        authToken: localStorage.getItem(AUTH_TOKEN),
+      }
+    }
+  })
+
+  const authLink = setContext((_, { headers }) => {
+    const token = localStorage.getItem(AUTH_TOKEN)
+    return {
+      headers: {
+        ...headers,
+        authorization: token ? `Bearer ${token}` : ''
+      }
+    }
+  });
+
+  const link = split(
+    ({ query }) => {
+      const { kind, operation } = getMainDefinition(query)
+      return kind === 'OperationDefinition' && operation === 'subscription'
+    },
+    wsLink,
+    authLink.concat(httpLink)
+  )
+
   const client = new ApolloClient({
-    link: httpLink,
+    link,
     ssrForceFetchDelay: 100,
     ssrMode: true,
-    cache: new InMemoryCache()
+    cache: new InMemoryCache().restore(window.__APOLLO_STATE__)
   });
 
   // Load in our HTML file from our build

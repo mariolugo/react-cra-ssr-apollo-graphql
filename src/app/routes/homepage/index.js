@@ -8,6 +8,6 @@ export default () => (
   <Page id="homepage">
     <p>Here's our homepage. All are welcome.</p>
     <LinkList />
-    <CreateLink />
+
   </Page>
 );
