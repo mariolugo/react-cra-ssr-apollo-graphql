@@ -11,8 +11,8 @@ const links = [
     text: 'About'
   },
   {
-    to: '/profile/1',
-    text: 'Profile 1'
+    to: '/search',
+    text: 'Search'
   },
   {
     to: '/profile/2',

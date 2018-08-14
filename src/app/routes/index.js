@@ -3,6 +3,7 @@ import { Route, Switch } from 'react-router-dom';
 import AuthenticatedRoute from '../components/authenticated-route';
 import UnauthenticatedRoute from '../components/unauthenticated-route';
 import Loadable from 'react-loadable';
+import Search from '../routes/homepage/Search'
 
 import NotFound from './not-found';
 
@@ -48,6 +49,7 @@ export default () => (
     <Route exact path="/about" component={About} />
 
     <Route exact path="/profile/:id" component={Profile} />
+    <Route exact path="/search" component={Search} />
 
     <AuthenticatedRoute exact path="/dashboard" component={Dashboard} />
 
