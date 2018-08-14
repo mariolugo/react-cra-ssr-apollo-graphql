@@ -6,6 +6,7 @@ import { AUTH_TOKEN } from '../../../constants.js';
 import { setCurrentUser } from '../../../modules/auth';
 import { Mutation } from 'react-apollo'
 import gql from 'graphql-tag'
+import cookies from 'js-cookie'
 
 const SIGNUP_MUTATION = gql`
   mutation SignupMutation($email: String!, $password: String!, $name: String!) {
@@ -38,7 +39,7 @@ class Login extends Component {
   }
 
   _saveUserData = (token, email) => {
-    localStorage.setItem(AUTH_TOKEN, token);
+    cookies.set(AUTH_TOKEN, token);
     this.props.setCurrentUser({email});
   }
 

@@ -26,13 +26,14 @@ import { createHttpLink } from 'apollo-link-http';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import 'isomorphic-fetch';
 import { split } from 'apollo-link'
+import { setContext } from 'apollo-link-context'
 import { WebSocketLink } from 'apollo-link-ws'
 import { getMainDefinition } from 'apollo-utilities'
+import cookies from 'js-cookie'
+import { AUTH_TOKEN } from '../src/constants'
 
 // LOADER
 export default (req, res) => {
-
-  console.log({req});
   /*
     A simple helper function to prepare the HTML markup. This loads:
       - Page title
@@ -53,22 +54,20 @@ export default (req, res) => {
     return data;
   };
 
-  const httpLink = createHttpLink({
-    uri: 'http://localhost:4000'
+  const httplink = new createHttpLink({
+  	uri: 'http://localhost:4000'
   });
 
-  const wsLink = new WebSocketLink({
+
+  const wsLink = process.browser ? new WebSocketLink({ // if you instantiate in the server, the error will be thrown
     uri: `ws://localhost:4000`,
     options: {
-      reconnect: true,
-      connectionParams: {
-        authToken: localStorage.getItem(AUTH_TOKEN),
-      }
+      reconnect: true
     }
-  })
+  }) : null;
 
   const authLink = setContext((_, { headers }) => {
-    const token = localStorage.getItem(AUTH_TOKEN)
+    const token = cookies.get(AUTH_TOKEN)
     return {
       headers: {
         ...headers,
@@ -77,20 +76,20 @@ export default (req, res) => {
     }
   });
 
-  const link = split(
+  const link = process.browser ? split(
     ({ query }) => {
       const { kind, operation } = getMainDefinition(query)
       return kind === 'OperationDefinition' && operation === 'subscription'
     },
     wsLink,
     authLink.concat(httpLink)
-  )
+  ): httplink;
 
   const client = new ApolloClient({
     link,
     ssrForceFetchDelay: 100,
     ssrMode: true,
-    cache: new InMemoryCache().restore(window.__APOLLO_STATE__)
+    cache: new InMemoryCache()
   });
 
   // Load in our HTML file from our build

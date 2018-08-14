@@ -14,6 +14,7 @@ import { AUTH_TOKEN } from './constants'
 import { split } from 'apollo-link'
 import { WebSocketLink } from 'apollo-link-ws'
 import { getMainDefinition } from 'apollo-utilities'
+import cookies from 'js-cookie'
 
 import App from './app/app';
 import './index.css';
@@ -30,13 +31,13 @@ const wsLink = new WebSocketLink({
   options: {
     reconnect: true,
     connectionParams: {
-      authToken: localStorage.getItem(AUTH_TOKEN),
+      authToken: cookies.get(AUTH_TOKEN),
     }
   }
 })
 
 const authLink = setContext((_, { headers }) => {
-  const token = localStorage.getItem(AUTH_TOKEN)
+  const token = cookies.get(AUTH_TOKEN);
   return {
     headers: {
       ...headers,
