@@ -22,7 +22,6 @@ class CreateLink extends Component {
 
   render() {
     const { description, url } = this.state
-    console.log('this.props',this.props);
     return (
       <div>
         <div className="flex flex-column mt3">

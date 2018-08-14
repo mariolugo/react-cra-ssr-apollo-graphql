@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { withApollo } from 'react-apollo'
 import gql from 'graphql-tag'
 import Link from './Link'
+import FEED_QUERY from './LinkList';
 
 const FEED_SEARCH_QUERY = gql`
   query FeedSearchQuery($filter: String!) {
@@ -33,6 +34,15 @@ class Search extends Component {
     filter: ''
   }
 
+  _updateCacheAfterVote = (store, createVote, linkId) => {
+    const data = store.readQuery({ query: FEED_QUERY })
+
+    const votedLink = data.feed.links.find(link => link.id === linkId)
+    votedLink.votes = createVote.link.votes
+
+    store.writeQuery({ query: FEED_QUERY, data })
+  }
+
   _executeSearch = async () => {
       console.log('aaa')
     const { filter } = this.state
@@ -56,7 +66,11 @@ class Search extends Component {
           <button onClick={() => this._executeSearch()}>OK</button>
         </div>
         {this.state.links.map((link, index) => (
-          <Link key={link.id} link={link} index={index} />
+          <Link
+              key={link.id}
+              link={link}
+              index={index}
+              updateStoreAfterVote={this._updateCacheAfterVote} />
         ))}
       </div>
     )

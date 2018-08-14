@@ -7,6 +7,7 @@ import { setCurrentUser } from '../../../modules/auth';
 import { Mutation } from 'react-apollo'
 import gql from 'graphql-tag'
 import cookies from 'js-cookie'
+import FacebookLogin from 'react-facebook-login';
 
 const SIGNUP_MUTATION = gql`
   mutation SignupMutation($email: String!, $password: String!, $name: String!) {
@@ -23,6 +24,20 @@ const LOGIN_MUTATION = gql`
     }
   }
 `
+
+const FACEBOOK_LOGIN = gql`
+  mutation FacebookSignIn($code: String!) {
+    facebookSignIn(code: $code) {
+      user {
+        email
+        name
+      }
+      session {
+        token
+      }
+    }
+  }
+`;
 
 class Login extends Component {
   state = {
@@ -47,9 +62,12 @@ class Login extends Component {
     console.log({error});
   }
 
+  _responseFacebook = (response) => {
+    console.log({response});
+  }
+
   render(){
     const { login, email, password, name } = this.state;
-    console.log(this.props);
     return (
       <Page>
         <h4 className="mv3">{login ? 'Login' : 'Sign Up'}</h4>
@@ -99,6 +117,18 @@ class Login extends Component {
               : 'already have an account?'}
           </div>
         </div>
+        <Mutation
+          mutation={FACEBOOK_LOGIN}
+        >
+          {postMutation => <FacebookLogin
+            appId="1748924262089537"
+            autoLoad={true}
+            fields="name,email,picture"
+            callback={postMutation}
+            cssClass="facebook-button"
+            icon="fa-facebook"
+          />}
+        </Mutation>
       </Page>
     );
   }

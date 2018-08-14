@@ -1,6 +1,9 @@
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const { APP_SECRET, getUserId } = require('../utils')
+const {
+  AuthenticationError,
+} = require('apollo-server')
 
 function post(parent, { url, description }, ctx, info) {
   const userId = getUserId(ctx);
@@ -34,7 +37,7 @@ async function signup(parent, args, ctx, info) {
 async function login(parent, args, ctx, info) {
   const user = await ctx.db.query.user({ where: { email: args.email } })
   if (!user) {
-    throw new Error('No such user found')
+    throw new AuthenticationError('must authenticate')
   }
 
   const valid = await bcrypt.compare(args.password, user.password)
@@ -46,6 +49,10 @@ async function login(parent, args, ctx, info) {
     token: jwt.sign({ userId: user.id }, APP_SECRET),
     user,
   }
+}
+
+async function facebookSignIn(parent, args, ctx, info) {
+
 }
 
 async function vote(parent, args, ctx, info) {
@@ -75,4 +82,5 @@ module.exports = {
   signup,
   login,
   vote,
+  facebookSignIn
 }
