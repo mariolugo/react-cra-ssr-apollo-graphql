@@ -10,6 +10,7 @@ import { isServer } from '../store';
 
 import Header from './header';
 import Routes from './routes';
+import 'semantic-ui-css/semantic.min.css';
 
 import './app.css';
 
