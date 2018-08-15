@@ -3,7 +3,8 @@ const jwt = require('jsonwebtoken')
 const { APP_SECRET, getUserId } = require('../utils')
 const {
   AuthenticationError,
-} = require('apollo-server')
+} = require('apollo-server');
+const {FB, FacebookApiException} = require('fb');
 
 function post(parent, { url, description }, ctx, info) {
   const userId = getUserId(ctx);
@@ -53,6 +54,36 @@ async function login(parent, args, ctx, info) {
 
 async function facebookSignIn(parent, args, ctx, info) {
 
+  const user = await FB.api('oauth/access_token', {
+    client_id: '1748924262089537',
+    client_secret: '1be7e92c0c8b236665415c1671e528ce',
+    code: args.code,
+    redirect_uri: 'http://localhost:3000/login/facebook-callback',
+  })
+  .then(res => {
+    if(!res || res.error) {
+        console.log(!res ? 'error occurred' : res.error);
+        return;
+    }
+    const { access_token } = res;
+
+    return FB.api('me', {
+      fields: 'id,name,email',
+      access_token: access_token
+    })
+  })
+  .then(res => {
+    return ctx.db.query.user({ where: { email: res.email } });
+  })
+  .then(res => {
+    return res;
+  });
+
+  console.log('user2',user);
+  return {
+    token: jwt.sign({ userId: user.id }, APP_SECRET),
+    user: user
+  };
 }
 
 async function vote(parent, args, ctx, info) {

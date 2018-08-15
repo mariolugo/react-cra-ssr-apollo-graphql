@@ -4,10 +4,12 @@ import { bindActionCreators } from 'redux';
 import Page from '../../components/page';
 import { AUTH_TOKEN } from '../../../constants.js';
 import { setCurrentUser } from '../../../modules/auth';
-import { Mutation } from 'react-apollo'
+import { Mutation, compose, graphql } from 'react-apollo'
 import gql from 'graphql-tag'
 import cookies from 'js-cookie'
 import FacebookLogin from 'react-facebook-login';
+import querystring from 'querystring';
+import FacebookLoginComponent from './FacebookLoginComponent';
 
 const SIGNUP_MUTATION = gql`
   mutation SignupMutation($email: String!, $password: String!, $name: String!) {
@@ -28,24 +30,52 @@ const LOGIN_MUTATION = gql`
 const FACEBOOK_LOGIN = gql`
   mutation FacebookSignIn($code: String!) {
     facebookSignIn(code: $code) {
+      token
       user {
-        email
         name
-      }
-      session {
-        token
+        email
       }
     }
   }
 `;
 
 class Login extends Component {
-  state = {
-    login: true, // switch between Login and SignUp
-    email: '',
-    password: '',
-    name: '',
-  };
+  constructor(props) {
+    super(props);
+
+    if (document.location.pathname === '/login/facebook-callback') {
+      this.code = querystring.parse(document.location.search)['?code'];
+    }
+
+    this.state = {
+      login: true, // switch between Login and SignUp
+      email: '',
+      password: '',
+      name: '',
+    };
+  }
+
+  componentDidMount() {
+    if (!this.code) {
+      return;
+    }
+
+    this.setState({ loading: true });
+    this.props.mutate({
+      variables:
+        {
+          code: this.code
+        }
+      })
+      .then(response => {
+
+        const { token, user } = response.data.facebookSignIn;
+        this._saveUserData(token, user.email);
+        this.props.history.push(`/`);
+      }).catch(e => {
+        this.setState({ loading: false });
+      });
+  }
 
   _confirm = async data => {
     const { token } = this.state.login ? data.login : data.signup
@@ -102,9 +132,9 @@ class Login extends Component {
             {(mutation, {loading, error}) => {
               if (error) this._onError(error);
               return (
-                  <div className="pointer mr2 button" onClick={mutation}>
-                    {login ? 'login' : 'create account'}
-                  </div>
+                <div className="pointer mr2 button" onClick={mutation}>
+                  {login ? 'login' : 'create account'}
+                </div>
               );
             }}
           </Mutation>
@@ -117,18 +147,7 @@ class Login extends Component {
               : 'already have an account?'}
           </div>
         </div>
-        <Mutation
-          mutation={FACEBOOK_LOGIN}
-        >
-          {postMutation => <FacebookLogin
-            appId="1748924262089537"
-            autoLoad={true}
-            fields="name,email,picture"
-            callback={postMutation}
-            cssClass="facebook-button"
-            icon="fa-facebook"
-          />}
-        </Mutation>
+        <FacebookLoginComponent />
       </Page>
     );
   }
@@ -137,7 +156,8 @@ class Login extends Component {
 const mapDispatchToProps = dispatch =>
   bindActionCreators({ setCurrentUser }, dispatch);
 
-export default connect(
+export default compose(connect(
   null,
   mapDispatchToProps
-)(Login);
+),
+graphql(FACEBOOK_LOGIN))(Login);

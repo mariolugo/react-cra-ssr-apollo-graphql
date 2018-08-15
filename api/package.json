@@ -1,7 +1,7 @@
 {
   "name": "hackernews-graphql-js",
   "scripts": {
-    "start": "node src/index.js",
+    "start": "nodemon src/index.js",
     "dev": "npm-run-all --parallel start playground",
     "playground": "graphql playground",
     "prisma": "prisma"

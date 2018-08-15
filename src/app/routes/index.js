@@ -53,7 +53,7 @@ export default () => (
 
     <AuthenticatedRoute exact path="/dashboard" component={Dashboard} />
 
-    <UnauthenticatedRoute exact path="/login" component={Login} />
+    <UnauthenticatedRoute path="/login" component={Login} />
     <AuthenticatedRoute exact path="/logout" component={Logout} />
 
     <Route component={NotFound} />
