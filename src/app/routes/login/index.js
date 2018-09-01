@@ -10,11 +10,27 @@ import cookies from 'js-cookie'
 import FacebookLogin from 'react-facebook-login';
 import querystring from 'querystring';
 import FacebookLoginComponent from './FacebookLoginComponent';
+import Button from '@material-ui/core/Button';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import { withStyles } from '@material-ui/core/styles';
+import AlertDialogSlide from './dialogSignUp';
+import FormControl from '@material-ui/core/FormControl';
+import Input from '@material-ui/core/Input';
+import InputLabel from '@material-ui/core/InputLabel';
+import LockIcon from '@material-ui/icons/LockOutlined';
+import Paper from '@material-ui/core/Paper';
+import Avatar from '@material-ui/core/Avatar';
+import Typography from '@material-ui/core/Typography';
+import './login.css';
 
 const SIGNUP_MUTATION = gql`
   mutation SignupMutation($email: String!, $password: String!, $name: String!) {
     signup(email: $email, password: $password, name: $name) {
       token
+      user{
+        name
+        email
+      }
     }
   }
 `
@@ -23,6 +39,10 @@ const LOGIN_MUTATION = gql`
   mutation LoginMutation($email: String!, $password: String!) {
     login(email: $email, password: $password) {
       token
+      user{
+        name
+        email
+      }
     }
   }
 `
@@ -52,11 +72,21 @@ class Login extends Component {
       email: '',
       password: '',
       name: '',
+      anchorEl: null,
+      openDialog: false,
+      loading: true
     };
   }
 
-  componentDidMount() {
+  componentWillMount() {
+    this.setState({
+      loading: true
+    });
+
     if (!this.code) {
+      this.setState({
+        loading: false
+      });
       return;
     }
 
@@ -68,9 +98,11 @@ class Login extends Component {
         }
       })
       .then(response => {
-
+        this.setState({
+          loading: false
+        });
         const { token, user } = response.data.facebookSignIn;
-        this._saveUserData(token, user.email);
+        this._saveUserData(token, user);
         this.props.history.push(`/`);
       }).catch(e => {
         this.setState({ loading: false });
@@ -78,14 +110,24 @@ class Login extends Component {
   }
 
   _confirm = async data => {
-    const { token } = this.state.login ? data.login : data.signup
-    this._saveUserData(token, this.state.email);
-    this.props.history.push(`/`);
+    const { token, user } = this.state.login ? data.login : data.signup
+
+    if (data.hasOwnProperty('signup')) {
+      console.log('suscrito');
+      this.setState({
+        openDialog: true,
+        token,
+        user
+       });
+      // this._saveUserData(token, user);
+    } else {
+      this.props.history.push(`/`);
+    }
   }
 
-  _saveUserData = (token, email) => {
+  _saveUserData = (token, user) => {
     cookies.set(AUTH_TOKEN, token);
-    this.props.setCurrentUser({email});
+    this.props.setCurrentUser(user);
   }
 
   _onError = error => {
@@ -96,62 +138,145 @@ class Login extends Component {
     console.log({response});
   }
 
+  _openDialog = () => {
+    this.setState({ openDialog: true });
+  };
+
+  _closeDialog = () => {
+    this.setState({ openDialog: false });
+    this._saveUserData(this.state.token, this.state.user);
+    this.props.history.push(`/`);
+  };
+
+  _acceptDialog = () => {
+    this.setState({ openDialog: false });
+    this._saveUserData(this.state.token, this.state.user);
+  }
+
+
+
   render(){
-    const { login, email, password, name } = this.state;
+    const { login, email, password, name, openDialog, loading } = this.state;
+    const { classes } = this.props;
+    if (loading) return (<CircularProgress className={classes.progress} size={50} />);
     return (
       <Page>
-        <h4 className="mv3">{login ? 'Login' : 'Sign Up'}</h4>
-        <div className="flex flex-column">
-          {!login && (
-            <input
-              value={name}
-              onChange={e => this.setState({ name: e.target.value })}
-              type="text"
-              placeholder="Your name"
-            />
-          )}
-          <input
-            value={email}
-            onChange={e => this.setState({ email: e.target.value })}
-            type="text"
-            placeholder="Your email address"
-          />
-          <input
-            value={password}
-            onChange={e => this.setState({ password: e.target.value })}
-            type="password"
-            placeholder="Choose a safe password"
-          />
-        </div>
-        <div className="flex mt3">
-          <Mutation
-            mutation={login ? LOGIN_MUTATION : SIGNUP_MUTATION}
-            variables={{ email, password, name }}
-            onCompleted={data => this._confirm(data)}
-          >
-            {(mutation, {loading, error}) => {
-              if (error) this._onError(error);
-              return (
-                <div className="pointer mr2 button" onClick={mutation}>
-                  {login ? 'login' : 'create account'}
-                </div>
-              );
-            }}
-          </Mutation>
-          <div
-            className="pointer button"
-            onClick={() => this.setState({ login: !login })}
-          >
-            {login
-              ? 'need to create an account?'
-              : 'already have an account?'}
+          <div className={classes.layout}>
+            <Paper className={classes.paper}>
+              <Avatar className={classes.avatar}>
+                <LockIcon />
+              </Avatar>
+              <Typography variant="headline">
+                {login ? 'Sign in' : 'Create account'}
+              </Typography>
+              <form className={classes.form}>
+                {!login && (
+                  <FormControl margin="normal" required fullWidth>
+                    <InputLabel htmlFor="name">Name</InputLabel>
+                    <Input id="name" name="name" onChange={e => this.setState({ name: e.target.value })} autoComplete="name" autoFocus />
+                  </FormControl>
+                )}
+                <FormControl margin="normal" required fullWidth>
+                  <InputLabel htmlFor="email">Email Address</InputLabel>
+                  <Input
+                    id="email"
+                    name="email"
+                    autoComplete="email"
+                    onChange={e => this.setState({ email: e.target.value })}
+                    autoFocus />
+                </FormControl>
+                <FormControl margin="normal" required fullWidth>
+                  <InputLabel htmlFor="password">Password</InputLabel>
+                  <Input
+                    name="password"
+                    type="password"
+                    onChange={e => this.setState({ password: e.target.value })}
+                    id="password"
+                    autoComplete="current-password"
+                  />
+                </FormControl>
+                <Mutation
+                  mutation={login ? LOGIN_MUTATION : SIGNUP_MUTATION}
+                  variables={{ email, password, name }}
+                  onCompleted={data => this._confirm(data)}
+                >
+                  {(mutation, {loading, error}) => {
+                    if (loading) return (<CircularProgress className={classes.progress} size={50} />);
+                    if (error) this._onError(error);
+                    return (
+                      <Button
+                        type="button"
+                        fullWidth
+                        variant="raised"
+                        color="primary"
+                        className={classes.submit}
+                        onClick={mutation}
+                      >
+                        {login ? 'Sign in' : 'Create account'}
+                      </Button>
+                    );
+                  }}
+                </Mutation>
+
+                <FacebookLoginComponent />
+                <Button
+                    fullWidth
+                    onClick={() => this.setState({ login: !login })}
+                    className={classes.mt10}
+                >
+                    {login
+                      ? 'need to create an account?'
+                      : 'already have an account?'}
+                </Button>
+              </form>
+            </Paper>
+              <AlertDialogSlide
+                handleClose={this._closeDialog}
+                handleAccept={this._acceptDialog}
+                open={openDialog}/>
           </div>
-        </div>
-        <FacebookLoginComponent />
       </Page>
     );
   }
 };
+
+const styles = theme => ({
+  progress: {
+    margin: theme.spacing.unit * 2,
+  },
+  layout: {
+    width: 'auto',
+    display: 'block', // Fix IE11 issue.
+    marginLeft: theme.spacing.unit * 3,
+    marginRight: theme.spacing.unit * 3,
+    [theme.breakpoints.up(400 + theme.spacing.unit * 3 * 2)]: {
+      width: 400,
+      marginLeft: 'auto',
+      marginRight: 'auto',
+    },
+  },
+  paper: {
+    marginTop: theme.spacing.unit * 8,
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    padding: `${theme.spacing.unit * 2}px ${theme.spacing.unit * 3}px ${theme.spacing.unit * 3}px`,
+  },
+  avatar: {
+    margin: theme.spacing.unit,
+    backgroundColor: theme.palette.secondary.main,
+  },
+  form: {
+    width: '100%', // Fix IE11 issue.
+    marginTop: theme.spacing.unit,
+  },
+  submit: {
+    marginTop: theme.spacing.unit * 3,
+  },
+  mt10: {
+      marginTop:10
+  }
+});
 
 const mapDispatchToProps = dispatch =>
   bindActionCreators({ setCurrentUser }, dispatch);
@@ -160,4 +285,5 @@ export default compose(connect(
   null,
   mapDispatchToProps
 ),
+withStyles(styles),
 graphql(FACEBOOK_LOGIN))(Login);

@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import Link from './Link';
 import { Query } from 'react-apollo';
 import gql from 'graphql-tag';
-import { Loader } from 'semantic-ui-react'
 
 export const FEED_QUERY = gql`
     {
@@ -118,7 +117,7 @@ class LinkList extends Component {
     return (
       <Query query={FEED_QUERY} ssr={false}>
         {({ loading, error, data, subscribeToMore }) => {
-          if (loading) return <Loader active inline='centered' />
+          if (loading) return null
           if (error) return <div>Error</div>
 
           this._subscribeToNewLinks(subscribeToMore)

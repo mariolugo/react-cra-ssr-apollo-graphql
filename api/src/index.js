@@ -21,7 +21,7 @@ const server = new GraphQLServer({
       typeDefs: 'src/generated/prisma.graphql',
       endpoint: 'https://eu1.prisma.sh/mario-lugo-28cf57/database/dev',
       secret: 'StarLord',
-      debug: true
+      debug: false
     }),
   }),
 })

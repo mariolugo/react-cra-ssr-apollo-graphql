@@ -38,7 +38,7 @@ async function signup(parent, args, ctx, info) {
 async function login(parent, args, ctx, info) {
   const user = await ctx.db.query.user({ where: { email: args.email } })
   if (!user) {
-    throw new AuthenticationError('must authenticate')
+    throw new Error('User not found')
   }
 
   const valid = await bcrypt.compare(args.password, user.password)
@@ -50,6 +50,16 @@ async function login(parent, args, ctx, info) {
     token: jwt.sign({ userId: user.id }, APP_SECRET),
     user,
   }
+}
+
+const makeId = () => {
+  let text = "";
+  let possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+  for (let i = 0; i < 5; i++)
+    text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+  return text;
 }
 
 async function facebookSignIn(parent, args, ctx, info) {
@@ -65,6 +75,7 @@ async function facebookSignIn(parent, args, ctx, info) {
         console.log(!res ? 'error occurred' : res.error);
         return;
     }
+
     const { access_token } = res;
 
     return FB.api('me', {
@@ -73,17 +84,42 @@ async function facebookSignIn(parent, args, ctx, info) {
     })
   })
   .then(res => {
-    return ctx.db.query.user({ where: { email: res.email } });
-  })
-  .then(res => {
-    return res;
+    return {
+      facebookId: res.id,
+      email: res.email,
+      name: res.name
+    };
   });
 
-  console.log('user2',user);
-  return {
-    token: jwt.sign({ userId: user.id }, APP_SECRET),
-    user: user
-  };
+  const userFound = await ctx.db.query.user({
+    where: {
+      email: user.email
+    }
+  });
+
+  if (userFound === null){
+    const password = await bcrypt.hash(makeId(), 10);
+    const createdUser = await ctx.db.mutation.createUser({
+      data: { ...user, password },
+    });
+
+    const token = jwt.sign({ userId: createdUser.id }, APP_SECRET);
+
+    console.log({
+      token,
+      createdUser,
+    });
+
+    return {
+      token,
+      createdUser,
+    }
+  } else {
+    return {
+      token: jwt.sign({ userId: userFound.id }, APP_SECRET),
+      user: userFound
+    };
+  }
 }
 
 async function vote(parent, args, ctx, info) {

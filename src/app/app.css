@@ -2,13 +2,6 @@
   text-align: center;
 }
 
-#header {
-  background-color: #222;
-  height: auto;
-  padding: 20px;
-  color: white;
-}
-
 #title {
   margin-top: 0px;
   font-size: 1.5em;
@@ -39,4 +32,21 @@
 
 #content {
   margin-top: 20px;
+}
+
+#header a {
+  color: white;
+  text-decoration: none;
+}
+
+#header a:focus {
+  outline: none;
+}
+
+#menu-appbar a {
+  text-decoration: none;
+}
+
+#menu-appbar a:focus {
+  outline: none;
 }

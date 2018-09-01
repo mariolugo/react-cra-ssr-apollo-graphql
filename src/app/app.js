@@ -10,7 +10,6 @@ import { isServer } from '../store';
 
 import Header from './header';
 import Routes from './routes';
-import 'semantic-ui-css/semantic.min.css';
 
 import './app.css';
 
@@ -27,6 +26,7 @@ class App extends Component {
         <Header
           isAuthenticated={this.props.isAuthenticated}
           current={this.props.location.pathname}
+          currentUser={this.props.currentUser}
         />
         <div id="content">
           <Routes />
@@ -36,9 +36,12 @@ class App extends Component {
   }
 }
 
-const mapStateToProps = state => ({
-  isAuthenticated: state.auth.isAuthenticated
-});
+const mapStateToProps = state => {
+  return {
+    isAuthenticated: state.auth.isAuthenticated,
+    currentUser: state.auth.currentUser
+  }
+};
 
 const mapDispatchToProps = dispatch =>
   bindActionCreators({ establishCurrentUser }, dispatch);

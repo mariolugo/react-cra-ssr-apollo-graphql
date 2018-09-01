@@ -48,7 +48,6 @@ export default () => (
     <Route exact path="/" component={Homepage} />
     <Route exact path="/about" component={About} />
 
-    <Route exact path="/profile/:id" component={Profile} />
     <Route exact path="/search" component={Search} />
 
     <AuthenticatedRoute exact path="/dashboard" component={Dashboard} />
@@ -56,6 +55,7 @@ export default () => (
     <UnauthenticatedRoute path="/login" component={Login} />
     <AuthenticatedRoute exact path="/logout" component={Logout} />
 
+    <AuthenticatedRoute exact path="/user/edit" component={Homepage} />
     <Route component={NotFound} />
   </Switch>
 );

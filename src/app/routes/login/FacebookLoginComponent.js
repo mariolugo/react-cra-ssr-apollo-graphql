@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import { withStyles } from '@material-ui/core/styles';
+import Button from '@material-ui/core/Button';
 
 class FacebookLoginComponent extends Component {
   constructor(props) {
@@ -16,10 +18,25 @@ class FacebookLoginComponent extends Component {
   }
 
   render() {
+    const { classes } = this.props;
     return (
-      <a onClick={this.onFacebookLogin}>Facebook Login </a>
+      <Button
+        fullWidth
+        variant="raised"
+        color="primary"
+        onClick={this.onFacebookLogin}
+        className={classes.submit}
+      >
+        Login with facebook
+      </Button>
     );
   }
 }
 
-export default FacebookLoginComponent;
+const styles = theme => ({
+  submit: {
+    marginTop: 5,
+  }
+});
+
+export default withStyles(styles)(FacebookLoginComponent);
