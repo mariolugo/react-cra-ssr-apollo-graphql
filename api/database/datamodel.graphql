@@ -15,10 +15,28 @@ type Link {
 
 type User {
   id: ID! @unique
-  name: String!
+  firstName: String!
+  lastName: String
+  role: Int! @default(value: 1)
   email: String! @unique
   password: String!
   facebookId: String @unique
   links: [Link!]!
   votes: [Vote!]!
+  isVerified: Boolean! @default(value: false)
+  token: String
+  passwordResetToken: String
+  passwordResetExpires: DateTime
+  gender: Int
+  occupation: Int
+  studying: String
+  working: String
+  images: [String!]
+  languages: [String!]
+  userAbout: [String!]
+  userLifeStyle: [String!]
+  userMusic: [String!]
+  userSports: [String!]
+  userMovies: [String!]
+  userExtra: [String!]
 }

@@ -11,10 +11,11 @@ type Feed {
 
 type Mutation {
   post(url: String!, description: String!): Link!
-  signup(email: String!, password: String!, name: String!): AuthPayload
+  signup(email: String!, password: String!, firstName: String!, lastName: String!): AuthPayload
   login(email: String!, password: String!): AuthPayload
   vote(linkId: ID!): Vote
   facebookSignIn(code: String!): AuthPayload
+  editUser(gender: Int): User
 }
 
 type AuthPayload {
@@ -24,8 +25,23 @@ type AuthPayload {
 
 type User {
   id: ID!
-  name: String!
+  firstName: String!
+  lastName: String
   email: String!
+  isVerified: Boolean!
+  facebookId: String
+  gender: Int
+  occupation: Int
+  studying: String
+  working: String
+  languages: [String!]
+  userAbout: [String!]
+  userLifeStyle: [String!]
+  userMusic: [String!]
+  userSports: [String!]
+  userMovies: [String!]
+  userExtra: [String!]
+  images: [String!]
 }
 
 type Subscription {

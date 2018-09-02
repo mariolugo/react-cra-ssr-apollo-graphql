@@ -1,5 +1,5 @@
 # source: https://eu1.prisma.sh/mario-lugo-28cf57/database/dev
-# timestamp: Tue Aug 14 2018 21:07:41 GMT-0500 (CDT)
+# timestamp: Sun Sep 02 2018 14:25:27 GMT-0500 (CDT)
 
 type AggregateLink {
   count: Int!
@@ -429,12 +429,30 @@ type Subscription {
 
 type User implements Node {
   id: ID!
-  name: String!
+  firstName: String!
+  lastName: String
+  role: Int!
   email: String!
   password: String!
   facebookId: String
   links(where: LinkWhereInput, orderBy: LinkOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Link!]
   votes(where: VoteWhereInput, orderBy: VoteOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Vote!]
+  isVerified: Boolean!
+  token: String
+  passwordResetToken: String
+  passwordResetExpires: DateTime
+  gender: Int
+  occupation: Int
+  studying: String
+  working: String
+  images: [String!]!
+  languages: [String!]!
+  userAbout: [String!]!
+  userLifeStyle: [String!]!
+  userMusic: [String!]!
+  userSports: [String!]!
+  userMovies: [String!]!
+  userExtra: [String!]!
 }
 
 """A connection to a list of items."""
@@ -447,13 +465,39 @@ type UserConnection {
   aggregate: AggregateUser!
 }
 
+input UserCreateimagesInput {
+  set: [String!]
+}
+
 input UserCreateInput {
-  name: String!
+  firstName: String!
+  lastName: String
+  role: Int
   email: String!
   password: String!
   facebookId: String
+  isVerified: Boolean
+  token: String
+  passwordResetToken: String
+  passwordResetExpires: DateTime
+  gender: Int
+  occupation: Int
+  studying: String
+  working: String
+  images: UserCreateimagesInput
+  languages: UserCreatelanguagesInput
+  userAbout: UserCreateuserAboutInput
+  userLifeStyle: UserCreateuserLifeStyleInput
+  userMusic: UserCreateuserMusicInput
+  userSports: UserCreateuserSportsInput
+  userMovies: UserCreateuserMoviesInput
+  userExtra: UserCreateuserExtraInput
   links: LinkCreateManyWithoutPostedByInput
   votes: VoteCreateManyWithoutUserInput
+}
+
+input UserCreatelanguagesInput {
+  set: [String!]
 }
 
 input UserCreateOneWithoutLinksInput {
@@ -466,19 +510,79 @@ input UserCreateOneWithoutVotesInput {
   connect: UserWhereUniqueInput
 }
 
+input UserCreateuserAboutInput {
+  set: [String!]
+}
+
+input UserCreateuserExtraInput {
+  set: [String!]
+}
+
+input UserCreateuserLifeStyleInput {
+  set: [String!]
+}
+
+input UserCreateuserMoviesInput {
+  set: [String!]
+}
+
+input UserCreateuserMusicInput {
+  set: [String!]
+}
+
+input UserCreateuserSportsInput {
+  set: [String!]
+}
+
 input UserCreateWithoutLinksInput {
-  name: String!
+  firstName: String!
+  lastName: String
+  role: Int
   email: String!
   password: String!
   facebookId: String
+  isVerified: Boolean
+  token: String
+  passwordResetToken: String
+  passwordResetExpires: DateTime
+  gender: Int
+  occupation: Int
+  studying: String
+  working: String
+  images: UserCreateimagesInput
+  languages: UserCreatelanguagesInput
+  userAbout: UserCreateuserAboutInput
+  userLifeStyle: UserCreateuserLifeStyleInput
+  userMusic: UserCreateuserMusicInput
+  userSports: UserCreateuserSportsInput
+  userMovies: UserCreateuserMoviesInput
+  userExtra: UserCreateuserExtraInput
   votes: VoteCreateManyWithoutUserInput
 }
 
 input UserCreateWithoutVotesInput {
-  name: String!
+  firstName: String!
+  lastName: String
+  role: Int
   email: String!
   password: String!
   facebookId: String
+  isVerified: Boolean
+  token: String
+  passwordResetToken: String
+  passwordResetExpires: DateTime
+  gender: Int
+  occupation: Int
+  studying: String
+  working: String
+  images: UserCreateimagesInput
+  languages: UserCreatelanguagesInput
+  userAbout: UserCreateuserAboutInput
+  userLifeStyle: UserCreateuserLifeStyleInput
+  userMusic: UserCreateuserMusicInput
+  userSports: UserCreateuserSportsInput
+  userMovies: UserCreateuserMoviesInput
+  userExtra: UserCreateuserExtraInput
   links: LinkCreateManyWithoutPostedByInput
 }
 
@@ -494,14 +598,34 @@ type UserEdge {
 enum UserOrderByInput {
   id_ASC
   id_DESC
-  name_ASC
-  name_DESC
+  firstName_ASC
+  firstName_DESC
+  lastName_ASC
+  lastName_DESC
+  role_ASC
+  role_DESC
   email_ASC
   email_DESC
   password_ASC
   password_DESC
   facebookId_ASC
   facebookId_DESC
+  isVerified_ASC
+  isVerified_DESC
+  token_ASC
+  token_DESC
+  passwordResetToken_ASC
+  passwordResetToken_DESC
+  passwordResetExpires_ASC
+  passwordResetExpires_DESC
+  gender_ASC
+  gender_DESC
+  occupation_ASC
+  occupation_DESC
+  studying_ASC
+  studying_DESC
+  working_ASC
+  working_DESC
   updatedAt_ASC
   updatedAt_DESC
   createdAt_ASC
@@ -510,10 +634,28 @@ enum UserOrderByInput {
 
 type UserPreviousValues {
   id: ID!
-  name: String!
+  firstName: String!
+  lastName: String
+  role: Int!
   email: String!
   password: String!
   facebookId: String
+  isVerified: Boolean!
+  token: String
+  passwordResetToken: String
+  passwordResetExpires: DateTime
+  gender: Int
+  occupation: Int
+  studying: String
+  working: String
+  images: [String!]!
+  languages: [String!]!
+  userAbout: [String!]!
+  userLifeStyle: [String!]!
+  userMusic: [String!]!
+  userSports: [String!]!
+  userMovies: [String!]!
+  userExtra: [String!]!
 }
 
 type UserSubscriptionPayload {
@@ -555,13 +697,39 @@ input UserSubscriptionWhereInput {
   node: UserWhereInput
 }
 
+input UserUpdateimagesInput {
+  set: [String!]
+}
+
 input UserUpdateInput {
-  name: String
+  firstName: String
+  lastName: String
+  role: Int
   email: String
   password: String
   facebookId: String
+  isVerified: Boolean
+  token: String
+  passwordResetToken: String
+  passwordResetExpires: DateTime
+  gender: Int
+  occupation: Int
+  studying: String
+  working: String
+  images: UserUpdateimagesInput
+  languages: UserUpdatelanguagesInput
+  userAbout: UserUpdateuserAboutInput
+  userLifeStyle: UserUpdateuserLifeStyleInput
+  userMusic: UserUpdateuserMusicInput
+  userSports: UserUpdateuserSportsInput
+  userMovies: UserUpdateuserMoviesInput
+  userExtra: UserUpdateuserExtraInput
   links: LinkUpdateManyWithoutPostedByInput
   votes: VoteUpdateManyWithoutUserInput
+}
+
+input UserUpdatelanguagesInput {
+  set: [String!]
 }
 
 input UserUpdateOneWithoutLinksInput {
@@ -581,19 +749,79 @@ input UserUpdateOneWithoutVotesInput {
   upsert: UserUpsertWithoutVotesInput
 }
 
+input UserUpdateuserAboutInput {
+  set: [String!]
+}
+
+input UserUpdateuserExtraInput {
+  set: [String!]
+}
+
+input UserUpdateuserLifeStyleInput {
+  set: [String!]
+}
+
+input UserUpdateuserMoviesInput {
+  set: [String!]
+}
+
+input UserUpdateuserMusicInput {
+  set: [String!]
+}
+
+input UserUpdateuserSportsInput {
+  set: [String!]
+}
+
 input UserUpdateWithoutLinksDataInput {
-  name: String
+  firstName: String
+  lastName: String
+  role: Int
   email: String
   password: String
   facebookId: String
+  isVerified: Boolean
+  token: String
+  passwordResetToken: String
+  passwordResetExpires: DateTime
+  gender: Int
+  occupation: Int
+  studying: String
+  working: String
+  images: UserUpdateimagesInput
+  languages: UserUpdatelanguagesInput
+  userAbout: UserUpdateuserAboutInput
+  userLifeStyle: UserUpdateuserLifeStyleInput
+  userMusic: UserUpdateuserMusicInput
+  userSports: UserUpdateuserSportsInput
+  userMovies: UserUpdateuserMoviesInput
+  userExtra: UserUpdateuserExtraInput
   votes: VoteUpdateManyWithoutUserInput
 }
 
 input UserUpdateWithoutVotesDataInput {
-  name: String
+  firstName: String
+  lastName: String
+  role: Int
   email: String
   password: String
   facebookId: String
+  isVerified: Boolean
+  token: String
+  passwordResetToken: String
+  passwordResetExpires: DateTime
+  gender: Int
+  occupation: Int
+  studying: String
+  working: String
+  images: UserUpdateimagesInput
+  languages: UserUpdatelanguagesInput
+  userAbout: UserUpdateuserAboutInput
+  userLifeStyle: UserUpdateuserLifeStyleInput
+  userMusic: UserUpdateuserMusicInput
+  userSports: UserUpdateuserSportsInput
+  userMovies: UserUpdateuserMoviesInput
+  userExtra: UserUpdateuserExtraInput
   links: LinkUpdateManyWithoutPostedByInput
 }
 
@@ -656,46 +884,108 @@ input UserWhereInput {
 
   """All values not ending with the given string."""
   id_not_ends_with: ID
-  name: String
+  firstName: String
 
   """All values that are not equal to given value."""
-  name_not: String
+  firstName_not: String
 
   """All values that are contained in given list."""
-  name_in: [String!]
+  firstName_in: [String!]
 
   """All values that are not contained in given list."""
-  name_not_in: [String!]
+  firstName_not_in: [String!]
 
   """All values less than the given value."""
-  name_lt: String
+  firstName_lt: String
 
   """All values less than or equal the given value."""
-  name_lte: String
+  firstName_lte: String
 
   """All values greater than the given value."""
-  name_gt: String
+  firstName_gt: String
 
   """All values greater than or equal the given value."""
-  name_gte: String
+  firstName_gte: String
 
   """All values containing the given string."""
-  name_contains: String
+  firstName_contains: String
 
   """All values not containing the given string."""
-  name_not_contains: String
+  firstName_not_contains: String
 
   """All values starting with the given string."""
-  name_starts_with: String
+  firstName_starts_with: String
 
   """All values not starting with the given string."""
-  name_not_starts_with: String
+  firstName_not_starts_with: String
 
   """All values ending with the given string."""
-  name_ends_with: String
+  firstName_ends_with: String
 
   """All values not ending with the given string."""
-  name_not_ends_with: String
+  firstName_not_ends_with: String
+  lastName: String
+
+  """All values that are not equal to given value."""
+  lastName_not: String
+
+  """All values that are contained in given list."""
+  lastName_in: [String!]
+
+  """All values that are not contained in given list."""
+  lastName_not_in: [String!]
+
+  """All values less than the given value."""
+  lastName_lt: String
+
+  """All values less than or equal the given value."""
+  lastName_lte: String
+
+  """All values greater than the given value."""
+  lastName_gt: String
+
+  """All values greater than or equal the given value."""
+  lastName_gte: String
+
+  """All values containing the given string."""
+  lastName_contains: String
+
+  """All values not containing the given string."""
+  lastName_not_contains: String
+
+  """All values starting with the given string."""
+  lastName_starts_with: String
+
+  """All values not starting with the given string."""
+  lastName_not_starts_with: String
+
+  """All values ending with the given string."""
+  lastName_ends_with: String
+
+  """All values not ending with the given string."""
+  lastName_not_ends_with: String
+  role: Int
+
+  """All values that are not equal to given value."""
+  role_not: Int
+
+  """All values that are contained in given list."""
+  role_in: [Int!]
+
+  """All values that are not contained in given list."""
+  role_not_in: [Int!]
+
+  """All values less than the given value."""
+  role_lt: Int
+
+  """All values less than or equal the given value."""
+  role_lte: Int
+
+  """All values greater than the given value."""
+  role_gt: Int
+
+  """All values greater than or equal the given value."""
+  role_gte: Int
   email: String
 
   """All values that are not equal to given value."""
@@ -816,6 +1106,236 @@ input UserWhereInput {
 
   """All values not ending with the given string."""
   facebookId_not_ends_with: String
+  isVerified: Boolean
+
+  """All values that are not equal to given value."""
+  isVerified_not: Boolean
+  token: String
+
+  """All values that are not equal to given value."""
+  token_not: String
+
+  """All values that are contained in given list."""
+  token_in: [String!]
+
+  """All values that are not contained in given list."""
+  token_not_in: [String!]
+
+  """All values less than the given value."""
+  token_lt: String
+
+  """All values less than or equal the given value."""
+  token_lte: String
+
+  """All values greater than the given value."""
+  token_gt: String
+
+  """All values greater than or equal the given value."""
+  token_gte: String
+
+  """All values containing the given string."""
+  token_contains: String
+
+  """All values not containing the given string."""
+  token_not_contains: String
+
+  """All values starting with the given string."""
+  token_starts_with: String
+
+  """All values not starting with the given string."""
+  token_not_starts_with: String
+
+  """All values ending with the given string."""
+  token_ends_with: String
+
+  """All values not ending with the given string."""
+  token_not_ends_with: String
+  passwordResetToken: String
+
+  """All values that are not equal to given value."""
+  passwordResetToken_not: String
+
+  """All values that are contained in given list."""
+  passwordResetToken_in: [String!]
+
+  """All values that are not contained in given list."""
+  passwordResetToken_not_in: [String!]
+
+  """All values less than the given value."""
+  passwordResetToken_lt: String
+
+  """All values less than or equal the given value."""
+  passwordResetToken_lte: String
+
+  """All values greater than the given value."""
+  passwordResetToken_gt: String
+
+  """All values greater than or equal the given value."""
+  passwordResetToken_gte: String
+
+  """All values containing the given string."""
+  passwordResetToken_contains: String
+
+  """All values not containing the given string."""
+  passwordResetToken_not_contains: String
+
+  """All values starting with the given string."""
+  passwordResetToken_starts_with: String
+
+  """All values not starting with the given string."""
+  passwordResetToken_not_starts_with: String
+
+  """All values ending with the given string."""
+  passwordResetToken_ends_with: String
+
+  """All values not ending with the given string."""
+  passwordResetToken_not_ends_with: String
+  passwordResetExpires: DateTime
+
+  """All values that are not equal to given value."""
+  passwordResetExpires_not: DateTime
+
+  """All values that are contained in given list."""
+  passwordResetExpires_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  passwordResetExpires_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  passwordResetExpires_lt: DateTime
+
+  """All values less than or equal the given value."""
+  passwordResetExpires_lte: DateTime
+
+  """All values greater than the given value."""
+  passwordResetExpires_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  passwordResetExpires_gte: DateTime
+  gender: Int
+
+  """All values that are not equal to given value."""
+  gender_not: Int
+
+  """All values that are contained in given list."""
+  gender_in: [Int!]
+
+  """All values that are not contained in given list."""
+  gender_not_in: [Int!]
+
+  """All values less than the given value."""
+  gender_lt: Int
+
+  """All values less than or equal the given value."""
+  gender_lte: Int
+
+  """All values greater than the given value."""
+  gender_gt: Int
+
+  """All values greater than or equal the given value."""
+  gender_gte: Int
+  occupation: Int
+
+  """All values that are not equal to given value."""
+  occupation_not: Int
+
+  """All values that are contained in given list."""
+  occupation_in: [Int!]
+
+  """All values that are not contained in given list."""
+  occupation_not_in: [Int!]
+
+  """All values less than the given value."""
+  occupation_lt: Int
+
+  """All values less than or equal the given value."""
+  occupation_lte: Int
+
+  """All values greater than the given value."""
+  occupation_gt: Int
+
+  """All values greater than or equal the given value."""
+  occupation_gte: Int
+  studying: String
+
+  """All values that are not equal to given value."""
+  studying_not: String
+
+  """All values that are contained in given list."""
+  studying_in: [String!]
+
+  """All values that are not contained in given list."""
+  studying_not_in: [String!]
+
+  """All values less than the given value."""
+  studying_lt: String
+
+  """All values less than or equal the given value."""
+  studying_lte: String
+
+  """All values greater than the given value."""
+  studying_gt: String
+
+  """All values greater than or equal the given value."""
+  studying_gte: String
+
+  """All values containing the given string."""
+  studying_contains: String
+
+  """All values not containing the given string."""
+  studying_not_contains: String
+
+  """All values starting with the given string."""
+  studying_starts_with: String
+
+  """All values not starting with the given string."""
+  studying_not_starts_with: String
+
+  """All values ending with the given string."""
+  studying_ends_with: String
+
+  """All values not ending with the given string."""
+  studying_not_ends_with: String
+  working: String
+
+  """All values that are not equal to given value."""
+  working_not: String
+
+  """All values that are contained in given list."""
+  working_in: [String!]
+
+  """All values that are not contained in given list."""
+  working_not_in: [String!]
+
+  """All values less than the given value."""
+  working_lt: String
+
+  """All values less than or equal the given value."""
+  working_lte: String
+
+  """All values greater than the given value."""
+  working_gt: String
+
+  """All values greater than or equal the given value."""
+  working_gte: String
+
+  """All values containing the given string."""
+  working_contains: String
+
+  """All values not containing the given string."""
+  working_not_contains: String
+
+  """All values starting with the given string."""
+  working_starts_with: String
+
+  """All values not starting with the given string."""
+  working_not_starts_with: String
+
+  """All values ending with the given string."""
+  working_ends_with: String
+
+  """All values not ending with the given string."""
+  working_not_ends_with: String
   links_every: LinkWhereInput
   links_some: LinkWhereInput
   links_none: LinkWhereInput

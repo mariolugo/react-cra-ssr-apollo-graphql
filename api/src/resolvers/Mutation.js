@@ -22,7 +22,8 @@ function post(parent, { url, description }, ctx, info) {
 }
 
 async function signup(parent, args, ctx, info) {
-  const password = await bcrypt.hash(args.password, 10)
+  const password = await bcrypt.hash(args.password, 10);
+  args.isVerified = false;
   const user = await ctx.db.mutation.createUser({
     data: { ...args, password },
   })
@@ -99,6 +100,7 @@ async function facebookSignIn(parent, args, ctx, info) {
 
   if (userFound === null){
     const password = await bcrypt.hash(makeId(), 10);
+    user.isVerified = false;
     const createdUser = await ctx.db.mutation.createUser({
       data: { ...user, password },
     });
@@ -144,10 +146,15 @@ async function vote(parent, args, ctx, info) {
   )
 }
 
+async function editUser(parent, args, ctx, info) {
+  return {};
+}
+
 module.exports = {
   post,
   signup,
   login,
   vote,
-  facebookSignIn
+  facebookSignIn,
+  editUser
 }

@@ -24,11 +24,13 @@ import Typography from '@material-ui/core/Typography';
 import './login.css';
 
 const SIGNUP_MUTATION = gql`
-  mutation SignupMutation($email: String!, $password: String!, $name: String!) {
-    signup(email: $email, password: $password, name: $name) {
+  mutation SignupMutation($email: String!, $password: String!, $firstName: String!, $lastName: String!) {
+    signup(email: $email, password: $password, firstName: $firstName, lastName: $lastName ) {
       token
       user{
-        name
+        id
+        firstName
+        lastName
         email
       }
     }
@@ -71,7 +73,8 @@ class Login extends Component {
       login: true, // switch between Login and SignUp
       email: '',
       password: '',
-      name: '',
+      firstName: '',
+      lastName: '',
       anchorEl: null,
       openDialog: false,
       loading: true
@@ -111,6 +114,8 @@ class Login extends Component {
 
   _confirm = async data => {
     const { token, user } = this.state.login ? data.login : data.signup
+
+    console.log({user});
 
     if (data.hasOwnProperty('signup')) {
       console.log('suscrito');
@@ -156,7 +161,7 @@ class Login extends Component {
 
 
   render(){
-    const { login, email, password, name, openDialog, loading } = this.state;
+    const { login, email, password, firstName, lastName, openDialog, loading } = this.state;
     const { classes } = this.props;
     if (loading) return (<CircularProgress className={classes.progress} size={50} />);
     return (
@@ -171,10 +176,16 @@ class Login extends Component {
               </Typography>
               <form className={classes.form}>
                 {!login && (
-                  <FormControl margin="normal" required fullWidth>
-                    <InputLabel htmlFor="name">Name</InputLabel>
-                    <Input id="name" name="name" onChange={e => this.setState({ name: e.target.value })} autoComplete="name" autoFocus />
-                  </FormControl>
+                    <div>
+                        <FormControl margin="normal" required fullWidth>
+                          <InputLabel htmlFor="firstName">First Name</InputLabel>
+                          <Input id="firstName" name="firstName" onChange={e => this.setState({ firstName: e.target.value })} autoComplete="fname" autoFocus />
+                        </FormControl>
+                        <FormControl margin="normal" required fullWidth>
+                          <InputLabel htmlFor="lastName">Last Name</InputLabel>
+                          <Input id="lastName" name="lastName" onChange={e => this.setState({ lastName: e.target.value })} autoComplete="lname"  />
+                        </FormControl>
+                    </div>
                 )}
                 <FormControl margin="normal" required fullWidth>
                   <InputLabel htmlFor="email">Email Address</InputLabel>
@@ -197,7 +208,7 @@ class Login extends Component {
                 </FormControl>
                 <Mutation
                   mutation={login ? LOGIN_MUTATION : SIGNUP_MUTATION}
-                  variables={{ email, password, name }}
+                  variables={{ email, password, firstName, lastName }}
                   onCompleted={data => this._confirm(data)}
                 >
                   {(mutation, {loading, error}) => {
