@@ -4,6 +4,10 @@
   overflow: hidden;
 } */
 
+html {
+  background-color: white !important;
+}
+
 body.full-height {
   overflow: hidden;
   height: calc(100vh - 30px);

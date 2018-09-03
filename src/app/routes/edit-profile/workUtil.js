@@ -1,0 +1,22 @@
+export default [
+  'arts',
+  'consulting',
+  'clients',
+  'beauty',
+  'laws',
+  'education',
+  'entertaiment',
+  'finances',
+  'realState',
+  'investigation',
+  'logistics',
+  'marketing',
+  'rrhh',
+  'health',
+  'publicServices',
+  'tech',
+  'turism',
+  'sales',
+  'internship',
+  'voluntary'
+];

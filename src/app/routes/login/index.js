@@ -124,8 +124,9 @@ class Login extends Component {
         token,
         user
        });
-      // this._saveUserData(token, user);
+
     } else {
+      this._saveUserData(token, user);
       this.props.history.push(`/`);
     }
   }
@@ -156,6 +157,7 @@ class Login extends Component {
   _acceptDialog = () => {
     this.setState({ openDialog: false });
     this._saveUserData(this.state.token, this.state.user);
+    this.props.history.push(`/user/edit`);
   }
 
 

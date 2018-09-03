@@ -27,16 +27,17 @@ type User {
   token: String
   passwordResetToken: String
   passwordResetExpires: DateTime
+  birthDay: DateTime
   gender: Int
   occupation: Int
   studying: String
   working: String
   images: [String!]
   languages: [String!]
-  userAbout: [String!]
+  userPersonality: [String!]
   userLifeStyle: [String!]
   userMusic: [String!]
   userSports: [String!]
   userMovies: [String!]
-  userExtra: [String!]
+  userExtra: String
 }

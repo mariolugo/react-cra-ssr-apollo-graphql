@@ -13,7 +13,7 @@ export const FEED_QUERY = gql`
           description
           postedBy {
             id
-            name
+            firstName
           }
           votes {
             id
@@ -36,7 +36,7 @@ const NEW_LINKS_SUBSCRIPTION = gql`
         createdAt
         postedBy {
           id
-          name
+          firstName
         }
         votes {
           id

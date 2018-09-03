@@ -33,14 +33,15 @@ type User {
   gender: Int
   occupation: Int
   studying: String
+  birthDay: DateTime
   working: String
   languages: [String!]
-  userAbout: [String!]
+  userPersonality: [String!]
   userLifeStyle: [String!]
   userMusic: [String!]
   userSports: [String!]
   userMovies: [String!]
-  userExtra: [String!]
+  userExtra: String
   images: [String!]
 }
 
