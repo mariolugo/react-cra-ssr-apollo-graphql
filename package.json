@@ -45,7 +45,8 @@
     ]
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "HOSTNAME=localhost:3000 react-scripts start",
+    "qa": "PORT=80 HOSTNAME=138.68.24.184 react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",

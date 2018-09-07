@@ -17,7 +17,7 @@ import Grid from '@material-ui/core/Grid';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 
-const cards = [1, 2, 3,];
+const cards = [1, 2, 3, 4];
 
 class HomePage extends Component {
 

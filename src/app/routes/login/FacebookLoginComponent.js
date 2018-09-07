@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import { isServer } from '../../../store';
+const HOSTNAME = process.env.HOSTNAME;
 
 class FacebookLoginComponent extends Component {
   constructor(props) {
@@ -9,7 +10,7 @@ class FacebookLoginComponent extends Component {
     this.onFacebookLogin = this.onFacebookLogin.bind(this);
 
     this.appId = '1748924262089537';
-    this.redirectUrl = `http://localhost:3000/${props.pathName}/facebook-callback`;
+    this.redirectUrl = `http://${HOSTNAME}/${props.pathName}/facebook-callback`;
 
   }
 

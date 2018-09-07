@@ -5,6 +5,8 @@ const {
   AuthenticationError,
 } = require('apollo-server');
 const {FB, FacebookApiException} = require('fb');
+const HOSTNAME = process.env.HOSTNAME;
+
 
 function post(parent, { url, description }, ctx, info) {
   const userId = getUserId(ctx);
@@ -71,7 +73,7 @@ async function facebookSignIn(parent, args, ctx, info) {
     client_id: '1748924262089537',
     client_secret: '1be7e92c0c8b236665415c1671e528ce',
     code: args.code,
-    redirect_uri: 'http://localhost:3000/login/facebook-callback',
+    redirect_uri: `http://${HOSTNAME}/login/facebook-callback`,
   })
   .then(res => {
     if(!res || res.error) {

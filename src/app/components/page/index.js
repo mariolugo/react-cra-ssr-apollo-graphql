@@ -3,9 +3,10 @@ import { withRouter } from 'react-router';
 import Helmet from 'react-helmet';
 import logo from '../../assets/logo.jpg';
 
+const HOSTNAME = process.env.HOSTNAME;
 const SITE_URL =
   process.env.NODE_ENV === 'development'
-    ? 'http://localhost:3000'
+    ? `http://${HOSTNAME}`
     : 'https://cra-ssr.herokuapp.com';
 
 const FACEBOOK_APP_ID = 'XXXXXXXXX';
