@@ -22,6 +22,8 @@ import Paper from '@material-ui/core/Paper';
 import Avatar from '@material-ui/core/Avatar';
 import Typography from '@material-ui/core/Typography';
 import './login.css';
+import { isServer } from '../../../store';
+
 
 const SIGNUP_MUTATION = gql`
   mutation SignupMutation($email: String!, $password: String!, $firstName: String!, $lastName: String!) {
@@ -31,7 +33,22 @@ const SIGNUP_MUTATION = gql`
         id
         firstName
         lastName
+        gender
+        occupation
+        studying
+        birthDay
+        working
+        languages
+        userPersonality
+        userLifeStyle
+        userMusic
+        userSports
+        userMovies
+        userExtra
+        images
         email
+        facebookId
+        isVerified
       }
     }
   }
@@ -42,8 +59,25 @@ const LOGIN_MUTATION = gql`
     login(email: $email, password: $password) {
       token
       user{
-        name
-        email
+          id
+          firstName
+          lastName
+          gender
+          occupation
+          studying
+          birthDay
+          working
+          languages
+          userPersonality
+          userLifeStyle
+          userMusic
+          userSports
+          userMovies
+          userExtra
+          images
+          email
+          facebookId
+          isVerified
       }
     }
   }
@@ -54,8 +88,25 @@ const FACEBOOK_LOGIN = gql`
     facebookSignIn(code: $code) {
       token
       user {
-        name
-        email
+          id
+          firstName
+          lastName
+          gender
+          occupation
+          studying
+          birthDay
+          working
+          languages
+          userPersonality
+          userLifeStyle
+          userMusic
+          userSports
+          userMovies
+          userExtra
+          images
+          email
+          facebookId
+          isVerified
       }
     }
   }
@@ -65,9 +116,13 @@ class Login extends Component {
   constructor(props) {
     super(props);
 
-    if (document.location.pathname === '/login/facebook-callback') {
-      this.code = querystring.parse(document.location.search)['?code'];
+    if (!isServer) {
+      if (props.location.pathname === '/login/facebook-callback') {
+        this.code = querystring.parse(props.location.search)['?code'];
+      }
     }
+
+
 
     this.state = {
       login: true, // switch between Login and SignUp
@@ -79,6 +134,7 @@ class Login extends Component {
       openDialog: false,
       loading: true
     };
+
   }
 
   componentWillMount() {
@@ -105,6 +161,7 @@ class Login extends Component {
           loading: false
         });
         const { token, user } = response.data.facebookSignIn;
+        console.log('user',user);
         this._saveUserData(token, user);
         this.props.history.push(`/`);
       }).catch(e => {
@@ -164,7 +221,7 @@ class Login extends Component {
 
   render(){
     const { login, email, password, firstName, lastName, openDialog, loading } = this.state;
-    const { classes } = this.props;
+    const { classes, ...rest } = this.props;
     if (loading) return (<CircularProgress className={classes.progress} size={50} />);
     return (
       <Page>
@@ -231,7 +288,7 @@ class Login extends Component {
                   }}
                 </Mutation>
 
-                <FacebookLoginComponent />
+                <FacebookLoginComponent pathName={'login'} {...rest} />
                 <Button
                     fullWidth
                     onClick={() => this.setState({ login: !login })}

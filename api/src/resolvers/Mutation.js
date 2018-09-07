@@ -65,6 +65,8 @@ const makeId = () => {
 
 async function facebookSignIn(parent, args, ctx, info) {
 
+    let facebookRes;
+
   const user = await FB.api('oauth/access_token', {
     client_id: '1748924262089537',
     client_secret: '1be7e92c0c8b236665415c1671e528ce',
@@ -85,6 +87,7 @@ async function facebookSignIn(parent, args, ctx, info) {
     })
   })
   .then(res => {
+      facebookRes = res;
     return {
       facebookId: res.id,
       email: res.email,
@@ -99,6 +102,7 @@ async function facebookSignIn(parent, args, ctx, info) {
   });
 
   if (userFound === null){
+    user.facebookId = facebookRes.id;
     const password = await bcrypt.hash(makeId(), 10);
     user.isVerified = false;
     const createdUser = await ctx.db.mutation.createUser({
@@ -116,12 +120,27 @@ async function facebookSignIn(parent, args, ctx, info) {
       token,
       createdUser,
     }
-  } else {
-    return {
-      token: jwt.sign({ userId: userFound.id }, APP_SECRET),
-      user: userFound
-    };
   }
+
+  if (userFound.facebookId === null){
+      const editedUser = await ctx.db.mutation.updateUser({
+        data: {
+            facebookId: facebookRes.id
+        },
+        where: { id: userFound.id }
+      });
+
+      if (editedUser){
+          userFound.facebookId = editedUser.facebookId
+      }
+
+
+  }
+
+  return {
+    token: jwt.sign({ userId: userFound.id }, APP_SECRET),
+    user: userFound
+  };
 }
 
 async function vote(parent, args, ctx, info) {
@@ -147,8 +166,72 @@ async function vote(parent, args, ctx, info) {
 }
 
 async function editUser(parent, args, ctx, info) {
-  return {};
+  const userId = getUserId(ctx);
+
+  const editedUser = await ctx.db.mutation.updateUser({
+    data: { ...args },
+    where: { id: userId }
+  });
+
+  return editedUser;
 }
+
+async function facebookConnect(parent, args, ctx, info) {
+
+  let facebookRes;
+
+  const user = await FB.api('oauth/access_token', {
+    client_id: '1748924262089537',
+    client_secret: '1be7e92c0c8b236665415c1671e528ce',
+    code: args.code,
+    redirect_uri: 'http://localhost:3000/dashboard/facebook-callback',
+  })
+  .then(res => {
+    if(!res || res.error) {
+        console.log(!res ? 'error occurred' : res.error);
+        return;
+    }
+
+    const { access_token } = res;
+
+    return FB.api('me', {
+      fields: 'id,name,email',
+      access_token: access_token
+    })
+  })
+  .then(res => {
+      facebookRes = res;
+    return {
+      facebookId: res.id,
+      email: res.email,
+      name: res.name
+    };
+  });
+
+  const userFound = await ctx.db.query.user({
+    where: {
+      email: user.email
+    }
+  });
+
+  if (userFound.facebookId === null){
+      const editedUser = await ctx.db.mutation.updateUser({
+        data: {
+            facebookId: facebookRes.id
+        },
+        where: { id: userFound.id }
+      });
+
+      if (editedUser){
+          userFound.facebookId = editedUser.facebookId
+      }
+  }
+
+  console.log({userFound})
+
+  return userFound;
+}
+
 
 module.exports = {
   post,
@@ -156,5 +239,6 @@ module.exports = {
   login,
   vote,
   facebookSignIn,
-  editUser
+  editUser,
+  facebookConnect
 }

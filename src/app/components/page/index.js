@@ -82,10 +82,10 @@ class Page extends Component {
   }
 
   render() {
-    const { children, id, className, ...rest } = this.props;
+    const { children, id, className, styles, ...rest } = this.props;
 
     return (
-      <div id={id} className={className}>
+      <div id={id} className={className} style={styles}>
         <Helmet
           htmlAttributes={{
             lang: 'en',

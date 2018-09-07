@@ -15,7 +15,8 @@ type Mutation {
   login(email: String!, password: String!): AuthPayload
   vote(linkId: ID!): Vote
   facebookSignIn(code: String!): AuthPayload
-  editUser(gender: Int): User
+  editUser(firstName: String!, lastName: String!, gender: String, occupation: String, studying: String, birthDay: DateTime, working: String, languages: [String!], userPersonality: [String!], userLifeStyle: [String!], userMusic: [String!], userSports: [String!], userMovies: [String!], userExtra: String, images: [String!]): User
+  facebookConnect(code: String!): User
 }
 
 type AuthPayload {
@@ -30,8 +31,8 @@ type User {
   email: String!
   isVerified: Boolean!
   facebookId: String
-  gender: Int
-  occupation: Int
+  gender: String
+  occupation: String
   studying: String
   birthDay: DateTime
   working: String

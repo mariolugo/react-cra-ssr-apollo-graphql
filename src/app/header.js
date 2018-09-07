@@ -17,18 +17,6 @@ const links = [
     text: "Homepage"
   },
   {
-    to: "/about",
-    text: "About"
-  },
-  {
-    to: "/search",
-    text: "Search"
-  },
-  {
-    to: "/this-is-broken",
-    text: "Broken Page"
-  },
-  {
     to: "/dashboard",
     text: "Dashboard",
     auth: true
@@ -158,6 +146,7 @@ class Header extends React.Component {
 const styles = {
   root: {
     flexGrow: 1,
+    display: 'flex'
   },
   flex: {
     flexGrow: 1,

@@ -8,6 +8,7 @@
     "apollo-boost": "^0.1.13",
     "apollo-link-context": "^1.0.8",
     "apollo-link-ws": "^1.0.8",
+    "cloudinary-react": "^1.0.6",
     "connected-react-router": "^4.3.0",
     "cookie-parser": "^1.4.3",
     "fb": "^2.0.0",
@@ -24,6 +25,7 @@
     "react": "^16.4.0",
     "react-apollo": "^2.1.11",
     "react-dom": "^16.4.0",
+    "react-dropzone": "^5.0.1",
     "react-facebook-login": "^4.0.1",
     "react-frontload": "^1.0.1",
     "react-helmet": "^5.2.0",
@@ -33,7 +35,8 @@
     "react-scripts": "1.1.4",
     "redux": "^4.0.0",
     "redux-thunk": "^2.3.0",
-    "subscriptions-transport-ws": "^0.9.14"
+    "subscriptions-transport-ws": "^0.9.14",
+    "superagent": "^3.8.3"
   },
   "lint-staged": {
     "src/**/*.{js,jsx,json,css}": [

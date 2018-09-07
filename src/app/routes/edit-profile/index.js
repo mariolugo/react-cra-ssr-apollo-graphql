@@ -31,6 +31,7 @@ import Chip from '@material-ui/core/Chip';
 import Checkbox from '@material-ui/core/Checkbox';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
+import StarRateIcon from '@material-ui/icons/StarRate';
 import ListItemText from '@material-ui/core/ListItemText';
 import Avatar from '@material-ui/core/Avatar';
 import FaceIcon from '@material-ui/icons/Face';
@@ -46,17 +47,38 @@ import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import userTagsUtil from './userTagsUtil';
+import ReactDropzone from 'react-dropzone';
+import {Image, Video, Transformation, CloudinaryContext} from 'cloudinary-react';
+import request from 'superagent';
+import { isServer } from '../../../store';
+
+const CLOUDINARY_UPLOAD_PRESET = 'pizwwixc';
+const CLOUDINARY_UPLOAD_URL = 'https://api.cloudinary.com/v1_1/roomies-ic/upload';
+const CLOUDINARY_DELETE_URL = 'https://api.cloudinary.com/v1_1/roomies-ic/delete_by_token'
+
 
 const EDIT_USER_MUTATION = gql`
-  mutation EditUserMutation($email: String!, $password: String!, $firstName: String!, $lastName: String!) {
-    editUser(email: $email, password: $password, firstName: $firstName, lastName: $lastName ) {
-      token
-      user{
+  mutation EditUserMutation($firstName: String!, $lastName: String!, $gender: String, $occupation: String, $studying: String, $birthDay: DateTime, $working: String, $languages: [String!], $userPersonality: [String!], $userLifeStyle: [String!], $userMusic: [String!], $userSports: [String!], $userMovies: [String!], $userExtra: String, $images: [String!]) {
+    editUser(firstName: $firstName, lastName: $lastName, gender: $gender, occupation: $occupation, studying: $studying, birthDay: $birthDay, working: $working, languages: $languages, userPersonality: $userPersonality, userLifeStyle: $userLifeStyle, userMusic: $userMusic, userSports: $userSports, userMovies: $userMovies, userExtra: $userExtra, images: $images) {
         id
         firstName
         lastName
+        gender
+        occupation
+        studying
+        birthDay
+        working
+        languages
+        userPersonality
+        userLifeStyle
+        userMusic
+        userSports
+        userMovies
+        userExtra
+        images
         email
-      }
+        facebookId
+        isVerified
     }
   }
 `;
@@ -99,36 +121,88 @@ class UserEdit extends React.Component {
     studies: [],
     languagesArr: [],
     selectedDrawerTab: 'personality',
-    userTags: {}
+    userTags: {},
+    files: [],
+    imgLoading: false
   };
 
   parentWidth = React.createRef();
 
   componentWillMount() {
-    document.body.classList.add('full-height');
-  }
-
-  componentDidMount() {
+    if (!isServer){
+      document.body.classList.add('full-height');
+    }
 
     let user = Cookies.getJSON('br_user');
 
     this.setState({
+      ...user
+    });
+  }
+
+  componentDidMount() {
+    this.setState({
       parentWidth: this.parentWidth.current.offsetWidth,
-      ...user,
       dates: days,
       jobs: jobsUtl,
       studies: studiesUtil,
       languagesArr: languagesUtil,
       userTags: userTagsUtil
     });
+
+    if(!this.state.languages){
+      this.setState({
+        languages: []
+      });
+    }
+
+    if (!this.state.userPersonality){
+      this.setState({
+        userPersonality: []
+      });
+    }
+
+    if (!this.state.userLifeStyle){
+      this.setState({
+        userLifeStyle: []
+      });
+    }
+
+    if (!this.state.userMusic){
+      this.setState({
+        userMusic: []
+      });
+    }
+
+    if (!this.state.userSports){
+      this.setState({
+        userSports: []
+      });
+    }
+
+    if (!this.state.userMovies){
+      this.setState({
+        userMovies: []
+      });
+    }
+
+    if (!this.state.images){
+      this.setState({
+        images: []
+      });
+    }
   }
 
   componentWillUnmount() {
-    document.body.classList.remove('full-height');
+    if (!isServer){
+      document.body.classList.remove('full-height');
+    }
+
   }
 
   _confirm = async data => {
-    console.log({data});
+    Cookies.set('br_user',data.editUser);
+    this.props.history.push('/dashboard')
   }
 
   toggleDrawer = (side, open, tab) => () => {
@@ -143,11 +217,73 @@ class UserEdit extends React.Component {
     }
   };
 
+  monthToNumb = (mth) => {
+      const months = [
+        'january', 'february', 'march', 'april', 'may',
+        'june', 'july', 'august', 'september',
+        'october', 'november', 'december'
+      ];
+      let month = months.indexOf(mth);
+      return month ? month + 1 : 0;
+  }
+
   _handleDrawerTab = panel => (event, expanded) => {
     this.setState({
       selectedDrawerTab: expanded ? panel : false,
     });
   };
+
+  _onError = error => {
+    console.log({error});
+  }
+
+  handleImageUpload = (file) => {
+      console.log({file});
+    let upload = request.post(CLOUDINARY_UPLOAD_URL)
+                        .field('upload_preset', CLOUDINARY_UPLOAD_PRESET)
+                        .field('file', file);
+
+    upload.end((err, response) => {
+      if (err) {
+        console.error(err);
+      }
+
+      if (response.body.secure_url !== '') {
+
+          this.setState({
+            images: this.state.images.concat(response.body.secure_url),
+          });
+
+          console.log(this.state.images);
+      }
+    });
+  }
+
+  onPreviewDrop = (files) => {
+      this.setState({
+          imgLoading: true
+      });
+      let length = this.state.images.length + files.length;
+      if (length <= 6){
+          files.map( file => {
+              this.handleImageUpload(file)
+          });
+      }
+      this.setState({
+          imgLoading: false
+      });
+  }
+
+  removeImageIndex = (index) => {
+      if (this.state.images.length > 0){
+          let files = this.state.images;
+          files.splice(index,1)
+          this.setState({
+              images: files
+          });
+      }
+
+  }
 
   render(){
     const { classes } = this.props;
@@ -157,8 +293,12 @@ class UserEdit extends React.Component {
     let monthBirth = 'december';
     let yearBirth = '1992';
 
+    let finalDate = new Date(yearBirth, this.monthToNumb(monthBirth) -1, dayBirth);
+
+    let dropzoneRef;
+
     return (
-      <Page id="userEdit" title="User Edit">
+      <Page id="userEdit" title="User Edit" styles={{backgroundColor: '#fff', paddingTop: 20}} >
         <div className={classes.layout}>
           <Grid container spacing={16} className={classes.marginTop15}>
             <Grid item xs={6} className={classes.leftContainer}>
@@ -174,7 +314,7 @@ class UserEdit extends React.Component {
                     </Typography>
                   </Grid>
                   <Grid item xs={12} sm={6}>
-                    <FormControl margin="normal" required fullWidth>
+                    <FormControl margin="normal" fullWidth>
                       <InputLabel htmlFor="firstName">First Name</InputLabel>
                       <Input
                         id="firstName"
@@ -187,7 +327,7 @@ class UserEdit extends React.Component {
                     </FormControl>
                   </Grid>
                   <Grid item xs={12} sm={6}>
-                    <FormControl margin="normal" required fullWidth>
+                    <FormControl margin="normal" fullWidth>
                       <InputLabel htmlFor="lastName">Last Name</InputLabel>
                       <Input
                         id="lastName"
@@ -208,7 +348,7 @@ class UserEdit extends React.Component {
                     </Typography>
                   </Grid>
                   <Grid item xs={12} sm={4}>
-                    <FormControl margin="normal" required fullWidth>
+                    <FormControl margin="normal" fullWidth>
                       <InputLabel shrink htmlFor="age-label-placeholder">
                         Día
                       </InputLabel>
@@ -225,7 +365,7 @@ class UserEdit extends React.Component {
                     </FormControl>
                   </Grid>
                   <Grid item xs={12} sm={4}>
-                    <FormControl margin="normal" required fullWidth>
+                    <FormControl margin="normal" fullWidth>
                       <InputLabel shrink htmlFor="age-label-placeholder">
                         Mes
                       </InputLabel>
@@ -242,7 +382,7 @@ class UserEdit extends React.Component {
                     </FormControl>
                   </Grid>
                   <Grid item xs={12} sm={4}>
-                    <FormControl margin="normal" required fullWidth>
+                    <FormControl margin="normal" fullWidth>
                       <InputLabel shrink htmlFor="age-label-placeholder">
                         Año
                       </InputLabel>
@@ -388,7 +528,8 @@ class UserEdit extends React.Component {
                         </div>
                       )}
                     >
-                      { languagesArr.length > 0 && languagesArr.map((language,index) => (
+
+                      { (languages && languagesArr.length > 0) && languagesArr.map((language,index) => (
                         (
                           <MenuItem key={language} value={language}>
                             <Checkbox checked={languages.indexOf(language) > -1} />
@@ -421,7 +562,7 @@ class UserEdit extends React.Component {
 
                       </ListItem>
                       <div className={classes.chips} style={{marginBottom: 10}}>
-                        { userPersonality.length > 0 && userPersonality.map((tag, index) =>  {
+                        { (userPersonality && userPersonality.length > 0) && userPersonality.map((tag, index) =>  {
 
                           return (
                             <Chip
@@ -446,7 +587,7 @@ class UserEdit extends React.Component {
                         </div>
                       </ListItem>
                       <div className={classes.chips} style={{marginBottom: 10}}>
-                        { userLifeStyle.length > 0 && userLifeStyle.map((tag, index) =>  {
+                        { (userLifeStyle && userLifeStyle.length > 0) && userLifeStyle.map((tag, index) =>  {
 
                           return (
                             <Chip
@@ -471,7 +612,7 @@ class UserEdit extends React.Component {
                         </div>
                       </ListItem>
                       <div className={classes.chips} style={{marginBottom: 10}}>
-                        { userMusic.length > 0 && userMusic.map((tag, index) =>  {
+                        { (userMusic && userMusic.length > 0) && userMusic.map((tag, index) =>  {
 
                           return (
                             <Chip
@@ -496,7 +637,7 @@ class UserEdit extends React.Component {
                         </div>
                       </ListItem>
                       <div className={classes.chips} style={{marginBottom: 10}}>
-                        { userSports.length > 0 && userSports.map((tag, index) =>  {
+                        { (userSports && userSports.length > 0) && userSports.map((tag, index) =>  {
 
                           return (
                             <Chip
@@ -521,7 +662,7 @@ class UserEdit extends React.Component {
                         </div>
                       </ListItem>
                       <div className={classes.chips} style={{marginBottom: 10}}>
-                        { userMovies.length > 0 && userMovies.map((tag, index) =>  {
+                        { (userMovies && userMovies.length > 0) && userMovies.map((tag, index) =>  {
 
                           return (
                             <Chip
@@ -550,6 +691,7 @@ class UserEdit extends React.Component {
                       placeholder="Información adicional"
                       rows={5}
                       multiline
+                      value={userExtra}
                       onChange={e =>
                         this.setState({ userExtra: e.target.value })
                       }
@@ -562,14 +704,17 @@ class UserEdit extends React.Component {
                 <Grid container spacing={16} className={classes.marginTop15}>
                   <Grid item xs={6}>
                     <Button
-                      fullWidth>
+                      fullWidth
+                      onClick={() => {
+                          this.props.history.push('/dashboard')
+                      }}>
                       Cancelar
                     </Button>
                   </Grid>
                   <Grid item xs={6}>
                     <Mutation
                       mutation={EDIT_USER_MUTATION}
-                      variables={{firstName, lastName, gender, occupation, studying, working, languages, userPersonality, userLifeStyle, userMusic, userSports, userMovies, userExtra, images, id}}
+                      variables={{firstName, lastName, gender, occupation, studying, working, languages, userPersonality, userLifeStyle, userMusic, userSports, userMovies, userExtra, images, birthDay: finalDate}}
                       onCompleted={data => this._confirm(data)}
                     >
                       {(mutation, {loading, error}) => {
@@ -584,7 +729,7 @@ class UserEdit extends React.Component {
                             className={classes.submit}
                             onClick={mutation}
                           >
-                            Crear cuenta
+                            Guardar
                           </Button>
                         );
                       }}
@@ -595,6 +740,63 @@ class UserEdit extends React.Component {
             </Grid>
             <Grid item xs={6} className={classes.rightContainer}>
               <Paper className={classes.paper}>
+                <ReactDropzone
+                  accept="image/*"
+                  onDrop={this.onPreviewDrop}
+                  style={{width:'100%', height: '100%'}}
+                  ref={(node) => { dropzoneRef = node; }}
+                  disableClick
+                >
+                    {images && images.length === 0 &&
+                        <Typography variant="title" gutterBottom className={classes.text}>
+                          Arrastra fotos aquí
+                        </Typography>
+                    }
+                    {(images && images.length > 0) &&
+                        <Grid container spacing={16} >
+                            <Grid item xs={12}>
+                                <Typography variant="title" gutterBottom className={classes.textInline} style={{float:'left'}} >
+                                  Añade fotos
+                                </Typography>
+                                <Typography variant="body1" gutterBottom align="right" style={{float:'right'}} className={classes.textInline}>
+                                    {images && images.length}/6
+                                </Typography>
+                            </Grid>
+
+                            {images && images.map((file,index) => (
+                                <Grid key={index} item xs={4} className={classes.imageGrid}>
+                                    <div
+                                      tabIndex={0}
+                                      role="button"
+                                      className={classes.imageButton}
+                                    >
+                                      <div >
+                                          {this.state.imgLoading}
+                                          <Button variant="fab" mini color="secondary" aria-label="Delete" className={classes.button} onClick={() => {
+                                                this.removeImageIndex(index)
+                                            }}>
+                                            <CloseIcon />
+                                          </Button>
+                                      </div>
+                                    </div>
+                                    {index === 0 &&
+                                        <div className={classes.starDiv}>
+                                          <StarRateIcon style={{color:'white'}} />
+                                        </div>
+                                    }
+                                    <img
+                                      alt="Preview"
+                                      key={index}
+                                      src={file}
+                                      className={classes.images}
+                                    />
+
+                                </Grid>
+                            ))}
+                        </Grid>
+
+                    }
+                </ReactDropzone>
 
               </Paper>
             </Grid>
@@ -636,7 +838,7 @@ class UserEdit extends React.Component {
                <ExpansionPanelDetails style={{display: 'block'}}>
                  { (userTags.hasOwnProperty('personality') && userTags.personality.length > 0) && userTags.personality.map((tag, index) =>  {
 
-                   if (userPersonality.indexOf(tag) !== -1){
+                   if (userPersonality && userPersonality.indexOf(tag) !== -1){
                      return(
                        <Chip
                          key={index}
@@ -691,7 +893,7 @@ class UserEdit extends React.Component {
                <ExpansionPanelDetails style={{display: 'block'}}>
                  { (userTags.hasOwnProperty('lifestyle') && userTags.lifestyle.length > 0) && userTags.lifestyle.map((tag, index) =>  {
 
-                   if (userLifeStyle.indexOf(tag) !== -1){
+                   if (userLifeStyle && userLifeStyle.indexOf(tag) !== -1){
                      return(
                        <Chip
                          key={index}
@@ -746,7 +948,7 @@ class UserEdit extends React.Component {
                <ExpansionPanelDetails style={{display: 'block'}}>
                  { (userTags.hasOwnProperty('music') && userTags.music.length > 0) && userTags.music.map((tag, index) =>  {
 
-                   if (userMusic.indexOf(tag) !== -1){
+                   if (userMusic && userMusic.indexOf(tag) !== -1){
                      return(
                        <Chip
                          key={index}
@@ -801,7 +1003,7 @@ class UserEdit extends React.Component {
                <ExpansionPanelDetails style={{display: 'block'}}>
                  { (userTags.hasOwnProperty('sports') && userTags.sports.length > 0) && userTags.sports.map((tag, index) =>  {
 
-                   if (userSports.indexOf(tag) !== -1){
+                   if (userSports && userSports.indexOf(tag) !== -1){
                      return(
                        <Chip
                          key={index}
@@ -856,7 +1058,7 @@ class UserEdit extends React.Component {
                <ExpansionPanelDetails style={{display: 'block'}}>
                  { (userTags.hasOwnProperty('movies') && userTags.movies.length > 0) && userTags.movies.map((tag, index) =>  {
 
-                   if (userMovies.indexOf(tag) !== -1){
+                   if (userMovies && userMovies.indexOf(tag) !== -1){
                      return(
                        <Chip
                          key={index}
@@ -956,6 +1158,21 @@ const styles = theme => ({
     height: 80,
     borderTop: '1px solid #d5d5d5',
   },
+  imageButton: {
+    position: 'absolute',
+    right: 19,
+    top: 14
+  },
+  imageGrid: {
+    display: 'flex',
+    position: 'relative'
+  },
+  images:{
+    width: 140,
+    display: 'block',
+    height: 140,
+    margin: '0 auto'
+  },
   drawerContainer: {
     padding: 15,
     backgroundColor: '#F5F5F5'
@@ -983,6 +1200,10 @@ const styles = theme => ({
     textAlign: 'left',
     color: 'black'
   },
+  textInline: {
+      display:'inline-block',
+      color: 'black'
+  },
   textDrawer: {
     paddingLeft: 15
   },
@@ -1001,7 +1222,7 @@ const styles = theme => ({
     color: theme.palette.text.secondary,
     whiteSpace: 'nowrap',
     marginBottom: theme.spacing.unit,
-    paddingTop: 15,
+    padding: 15,
     backgroundColor: '#F5F5F5',
     height: 'calc(100vh - 180px)'
   },
@@ -1062,6 +1283,14 @@ const styles = theme => ({
   chip: {
     margin: 5
   },
+  starDiv: {
+    position: 'absolute',
+    bottom: 8,
+    backgroundColor: 'blue',
+    left: 10,
+    width: 31,
+    height: 31,
+  }
 });
 
 export default compose(

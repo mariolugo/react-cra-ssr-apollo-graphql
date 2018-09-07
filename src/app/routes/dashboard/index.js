@@ -20,6 +20,9 @@ import './dashboard.css';
 import AppBar from '@material-ui/core/AppBar';
 import Badge from '@material-ui/core/Badge';
 import logo from '../../assets/logo.jpg';
+import { Link } from "react-router-dom";
+import Button from '@material-ui/core/Button';
+import Profile from '../profile'
 
 function TabContainer(props) {
   return (
@@ -39,10 +42,10 @@ class Dashboard extends React.Component {
     };
 
     render(){
-      const { currentUser, classes } = this.props;
+      const { currentUser, classes, ...rest } = this.props;
       const { value } = this.state;
       return (
-      <Page id="dashboard" title="Dashboard">
+      <Page id="dashboard" title="Dashboard" styles={{backgroundColor: '#f7f7f7', paddingTop: 20}}>
         <div className={classes.layout}>
             <div className={classes.root}>
                 <Grid item xs={12}>
@@ -77,27 +80,7 @@ class Dashboard extends React.Component {
                 </Grid>
             </div>
 
-          <Grid container spacing={16} className={classes.marginTop15}>
-            <Grid item xs={4}>
-              <Paper className={classes.paper}>
-                <Typography variant="title" gutterBottom>
-                  Mi perfil
-                </Typography>
-                <div className={classes.paddingSides10}>
-                  <LinearProgress className={classes.marginTop15} variant="determinate" value={20} />
-                  20%
-                </div>
-                <img
-                  className={classes.imgResponsive}
-                  src={logo}
-                  title={"profileImage"}
-                  alt={"logo"}/>
-              </Paper>
-            </Grid>
-            <Grid item xs={8}>
-              <Paper className={classes.paper}>xs=8</Paper>
-            </Grid>
-          </Grid>
+            <Profile {...rest} />
           <Divider className={classes.divider} />
         </div>
       </Page>
@@ -157,7 +140,7 @@ const styles = theme => ({
     marginRight: theme.spacing.unit * 3,
     marginTop: 20,
     [theme.breakpoints.up(900 + theme.spacing.unit * 3 * 2)]: {
-      width: 1000,
+      width: 1050,
       marginLeft: 'auto',
       marginRight: 'auto',
     },

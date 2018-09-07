@@ -28,16 +28,16 @@ type User {
   passwordResetToken: String
   passwordResetExpires: DateTime
   birthDay: DateTime
-  gender: Int
-  occupation: Int
+  gender: String
+  occupation: String
   studying: String
   working: String
-  images: [String!]
-  languages: [String!]
-  userPersonality: [String!]
-  userLifeStyle: [String!]
-  userMusic: [String!]
-  userSports: [String!]
-  userMovies: [String!]
+  images: Json
+  languages: Json
+  userPersonality: Json
+  userLifeStyle: Json
+  userMusic: Json
+  userSports: Json
+  userMovies: Json
   userExtra: String
 }

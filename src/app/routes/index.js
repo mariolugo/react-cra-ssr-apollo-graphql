@@ -37,12 +37,6 @@ const Logout = Loadable({
   modules: ['logout']
 });
 
-const Profile = Loadable({
-  loader: () => import(/* webpackChunkName: "profile" */ './profile'),
-  loading: () => null,
-  modules: ['profile']
-});
-
 const UserEdit = Loadable({
   loader: () => import(/* webpackChunkName: "edit-profile" */ './edit-profile'),
   loading: () => null,
@@ -56,7 +50,7 @@ export default () => (
 
     <Route exact path="/search" component={Search} />
 
-    <AuthenticatedRoute exact path="/dashboard" component={Dashboard} />
+    <AuthenticatedRoute path="/dashboard" component={Dashboard} />
 
     <UnauthenticatedRoute path="/login" component={Login} />
     <AuthenticatedRoute exact path="/logout" component={Logout} />

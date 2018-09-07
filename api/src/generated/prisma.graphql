@@ -1,5 +1,5 @@
-# source: https://eu1.prisma.sh/mario-lugo-28cf57/database/dev
-# timestamp: Sun Sep 02 2018 14:25:27 GMT-0500 (CDT)
+# source: https://us1.prisma.sh/mario-lugo-28cf57/database/dev
+# timestamp: Mon Sep 03 2018 20:22:30 GMT-0500 (CDT)
 
 type AggregateLink {
   count: Int!
@@ -19,6 +19,9 @@ type BatchPayload {
 }
 
 scalar DateTime
+
+"""Raw JSON value"""
+scalar Json
 
 type Link implements Node {
   id: ID!
@@ -441,18 +444,19 @@ type User implements Node {
   token: String
   passwordResetToken: String
   passwordResetExpires: DateTime
-  gender: Int
-  occupation: Int
+  birthDay: DateTime
+  gender: String
+  occupation: String
   studying: String
   working: String
-  images: [String!]!
-  languages: [String!]!
-  userAbout: [String!]!
-  userLifeStyle: [String!]!
-  userMusic: [String!]!
-  userSports: [String!]!
-  userMovies: [String!]!
-  userExtra: [String!]!
+  images: Json
+  languages: Json
+  userPersonality: Json
+  userLifeStyle: Json
+  userMusic: Json
+  userSports: Json
+  userMovies: Json
+  userExtra: String
 }
 
 """A connection to a list of items."""
@@ -463,10 +467,6 @@ type UserConnection {
   """A list of edges."""
   edges: [UserEdge]!
   aggregate: AggregateUser!
-}
-
-input UserCreateimagesInput {
-  set: [String!]
 }
 
 input UserCreateInput {
@@ -480,24 +480,21 @@ input UserCreateInput {
   token: String
   passwordResetToken: String
   passwordResetExpires: DateTime
-  gender: Int
-  occupation: Int
+  birthDay: DateTime
+  gender: String
+  occupation: String
   studying: String
   working: String
-  images: UserCreateimagesInput
-  languages: UserCreatelanguagesInput
-  userAbout: UserCreateuserAboutInput
-  userLifeStyle: UserCreateuserLifeStyleInput
-  userMusic: UserCreateuserMusicInput
-  userSports: UserCreateuserSportsInput
-  userMovies: UserCreateuserMoviesInput
-  userExtra: UserCreateuserExtraInput
+  images: Json
+  languages: Json
+  userPersonality: Json
+  userLifeStyle: Json
+  userMusic: Json
+  userSports: Json
+  userMovies: Json
+  userExtra: String
   links: LinkCreateManyWithoutPostedByInput
   votes: VoteCreateManyWithoutUserInput
-}
-
-input UserCreatelanguagesInput {
-  set: [String!]
 }
 
 input UserCreateOneWithoutLinksInput {
@@ -508,30 +505,6 @@ input UserCreateOneWithoutLinksInput {
 input UserCreateOneWithoutVotesInput {
   create: UserCreateWithoutVotesInput
   connect: UserWhereUniqueInput
-}
-
-input UserCreateuserAboutInput {
-  set: [String!]
-}
-
-input UserCreateuserExtraInput {
-  set: [String!]
-}
-
-input UserCreateuserLifeStyleInput {
-  set: [String!]
-}
-
-input UserCreateuserMoviesInput {
-  set: [String!]
-}
-
-input UserCreateuserMusicInput {
-  set: [String!]
-}
-
-input UserCreateuserSportsInput {
-  set: [String!]
 }
 
 input UserCreateWithoutLinksInput {
@@ -545,18 +518,19 @@ input UserCreateWithoutLinksInput {
   token: String
   passwordResetToken: String
   passwordResetExpires: DateTime
-  gender: Int
-  occupation: Int
+  birthDay: DateTime
+  gender: String
+  occupation: String
   studying: String
   working: String
-  images: UserCreateimagesInput
-  languages: UserCreatelanguagesInput
-  userAbout: UserCreateuserAboutInput
-  userLifeStyle: UserCreateuserLifeStyleInput
-  userMusic: UserCreateuserMusicInput
-  userSports: UserCreateuserSportsInput
-  userMovies: UserCreateuserMoviesInput
-  userExtra: UserCreateuserExtraInput
+  images: Json
+  languages: Json
+  userPersonality: Json
+  userLifeStyle: Json
+  userMusic: Json
+  userSports: Json
+  userMovies: Json
+  userExtra: String
   votes: VoteCreateManyWithoutUserInput
 }
 
@@ -571,18 +545,19 @@ input UserCreateWithoutVotesInput {
   token: String
   passwordResetToken: String
   passwordResetExpires: DateTime
-  gender: Int
-  occupation: Int
+  birthDay: DateTime
+  gender: String
+  occupation: String
   studying: String
   working: String
-  images: UserCreateimagesInput
-  languages: UserCreatelanguagesInput
-  userAbout: UserCreateuserAboutInput
-  userLifeStyle: UserCreateuserLifeStyleInput
-  userMusic: UserCreateuserMusicInput
-  userSports: UserCreateuserSportsInput
-  userMovies: UserCreateuserMoviesInput
-  userExtra: UserCreateuserExtraInput
+  images: Json
+  languages: Json
+  userPersonality: Json
+  userLifeStyle: Json
+  userMusic: Json
+  userSports: Json
+  userMovies: Json
+  userExtra: String
   links: LinkCreateManyWithoutPostedByInput
 }
 
@@ -618,6 +593,8 @@ enum UserOrderByInput {
   passwordResetToken_DESC
   passwordResetExpires_ASC
   passwordResetExpires_DESC
+  birthDay_ASC
+  birthDay_DESC
   gender_ASC
   gender_DESC
   occupation_ASC
@@ -626,6 +603,22 @@ enum UserOrderByInput {
   studying_DESC
   working_ASC
   working_DESC
+  images_ASC
+  images_DESC
+  languages_ASC
+  languages_DESC
+  userPersonality_ASC
+  userPersonality_DESC
+  userLifeStyle_ASC
+  userLifeStyle_DESC
+  userMusic_ASC
+  userMusic_DESC
+  userSports_ASC
+  userSports_DESC
+  userMovies_ASC
+  userMovies_DESC
+  userExtra_ASC
+  userExtra_DESC
   updatedAt_ASC
   updatedAt_DESC
   createdAt_ASC
@@ -644,18 +637,19 @@ type UserPreviousValues {
   token: String
   passwordResetToken: String
   passwordResetExpires: DateTime
-  gender: Int
-  occupation: Int
+  birthDay: DateTime
+  gender: String
+  occupation: String
   studying: String
   working: String
-  images: [String!]!
-  languages: [String!]!
-  userAbout: [String!]!
-  userLifeStyle: [String!]!
-  userMusic: [String!]!
-  userSports: [String!]!
-  userMovies: [String!]!
-  userExtra: [String!]!
+  images: Json
+  languages: Json
+  userPersonality: Json
+  userLifeStyle: Json
+  userMusic: Json
+  userSports: Json
+  userMovies: Json
+  userExtra: String
 }
 
 type UserSubscriptionPayload {
@@ -697,10 +691,6 @@ input UserSubscriptionWhereInput {
   node: UserWhereInput
 }
 
-input UserUpdateimagesInput {
-  set: [String!]
-}
-
 input UserUpdateInput {
   firstName: String
   lastName: String
@@ -712,24 +702,21 @@ input UserUpdateInput {
   token: String
   passwordResetToken: String
   passwordResetExpires: DateTime
-  gender: Int
-  occupation: Int
+  birthDay: DateTime
+  gender: String
+  occupation: String
   studying: String
   working: String
-  images: UserUpdateimagesInput
-  languages: UserUpdatelanguagesInput
-  userAbout: UserUpdateuserAboutInput
-  userLifeStyle: UserUpdateuserLifeStyleInput
-  userMusic: UserUpdateuserMusicInput
-  userSports: UserUpdateuserSportsInput
-  userMovies: UserUpdateuserMoviesInput
-  userExtra: UserUpdateuserExtraInput
+  images: Json
+  languages: Json
+  userPersonality: Json
+  userLifeStyle: Json
+  userMusic: Json
+  userSports: Json
+  userMovies: Json
+  userExtra: String
   links: LinkUpdateManyWithoutPostedByInput
   votes: VoteUpdateManyWithoutUserInput
-}
-
-input UserUpdatelanguagesInput {
-  set: [String!]
 }
 
 input UserUpdateOneWithoutLinksInput {
@@ -749,30 +736,6 @@ input UserUpdateOneWithoutVotesInput {
   upsert: UserUpsertWithoutVotesInput
 }
 
-input UserUpdateuserAboutInput {
-  set: [String!]
-}
-
-input UserUpdateuserExtraInput {
-  set: [String!]
-}
-
-input UserUpdateuserLifeStyleInput {
-  set: [String!]
-}
-
-input UserUpdateuserMoviesInput {
-  set: [String!]
-}
-
-input UserUpdateuserMusicInput {
-  set: [String!]
-}
-
-input UserUpdateuserSportsInput {
-  set: [String!]
-}
-
 input UserUpdateWithoutLinksDataInput {
   firstName: String
   lastName: String
@@ -784,18 +747,19 @@ input UserUpdateWithoutLinksDataInput {
   token: String
   passwordResetToken: String
   passwordResetExpires: DateTime
-  gender: Int
-  occupation: Int
+  birthDay: DateTime
+  gender: String
+  occupation: String
   studying: String
   working: String
-  images: UserUpdateimagesInput
-  languages: UserUpdatelanguagesInput
-  userAbout: UserUpdateuserAboutInput
-  userLifeStyle: UserUpdateuserLifeStyleInput
-  userMusic: UserUpdateuserMusicInput
-  userSports: UserUpdateuserSportsInput
-  userMovies: UserUpdateuserMoviesInput
-  userExtra: UserUpdateuserExtraInput
+  images: Json
+  languages: Json
+  userPersonality: Json
+  userLifeStyle: Json
+  userMusic: Json
+  userSports: Json
+  userMovies: Json
+  userExtra: String
   votes: VoteUpdateManyWithoutUserInput
 }
 
@@ -810,18 +774,19 @@ input UserUpdateWithoutVotesDataInput {
   token: String
   passwordResetToken: String
   passwordResetExpires: DateTime
-  gender: Int
-  occupation: Int
+  birthDay: DateTime
+  gender: String
+  occupation: String
   studying: String
   working: String
-  images: UserUpdateimagesInput
-  languages: UserUpdatelanguagesInput
-  userAbout: UserUpdateuserAboutInput
-  userLifeStyle: UserUpdateuserLifeStyleInput
-  userMusic: UserUpdateuserMusicInput
-  userSports: UserUpdateuserSportsInput
-  userMovies: UserUpdateuserMoviesInput
-  userExtra: UserUpdateuserExtraInput
+  images: Json
+  languages: Json
+  userPersonality: Json
+  userLifeStyle: Json
+  userMusic: Json
+  userSports: Json
+  userMovies: Json
+  userExtra: String
   links: LinkUpdateManyWithoutPostedByInput
 }
 
@@ -1212,50 +1177,108 @@ input UserWhereInput {
 
   """All values greater than or equal the given value."""
   passwordResetExpires_gte: DateTime
-  gender: Int
+  birthDay: DateTime
 
   """All values that are not equal to given value."""
-  gender_not: Int
+  birthDay_not: DateTime
 
   """All values that are contained in given list."""
-  gender_in: [Int!]
+  birthDay_in: [DateTime!]
 
   """All values that are not contained in given list."""
-  gender_not_in: [Int!]
+  birthDay_not_in: [DateTime!]
 
   """All values less than the given value."""
-  gender_lt: Int
+  birthDay_lt: DateTime
 
   """All values less than or equal the given value."""
-  gender_lte: Int
+  birthDay_lte: DateTime
 
   """All values greater than the given value."""
-  gender_gt: Int
+  birthDay_gt: DateTime
 
   """All values greater than or equal the given value."""
-  gender_gte: Int
-  occupation: Int
+  birthDay_gte: DateTime
+  gender: String
 
   """All values that are not equal to given value."""
-  occupation_not: Int
+  gender_not: String
 
   """All values that are contained in given list."""
-  occupation_in: [Int!]
+  gender_in: [String!]
 
   """All values that are not contained in given list."""
-  occupation_not_in: [Int!]
+  gender_not_in: [String!]
 
   """All values less than the given value."""
-  occupation_lt: Int
+  gender_lt: String
 
   """All values less than or equal the given value."""
-  occupation_lte: Int
+  gender_lte: String
 
   """All values greater than the given value."""
-  occupation_gt: Int
+  gender_gt: String
 
   """All values greater than or equal the given value."""
-  occupation_gte: Int
+  gender_gte: String
+
+  """All values containing the given string."""
+  gender_contains: String
+
+  """All values not containing the given string."""
+  gender_not_contains: String
+
+  """All values starting with the given string."""
+  gender_starts_with: String
+
+  """All values not starting with the given string."""
+  gender_not_starts_with: String
+
+  """All values ending with the given string."""
+  gender_ends_with: String
+
+  """All values not ending with the given string."""
+  gender_not_ends_with: String
+  occupation: String
+
+  """All values that are not equal to given value."""
+  occupation_not: String
+
+  """All values that are contained in given list."""
+  occupation_in: [String!]
+
+  """All values that are not contained in given list."""
+  occupation_not_in: [String!]
+
+  """All values less than the given value."""
+  occupation_lt: String
+
+  """All values less than or equal the given value."""
+  occupation_lte: String
+
+  """All values greater than the given value."""
+  occupation_gt: String
+
+  """All values greater than or equal the given value."""
+  occupation_gte: String
+
+  """All values containing the given string."""
+  occupation_contains: String
+
+  """All values not containing the given string."""
+  occupation_not_contains: String
+
+  """All values starting with the given string."""
+  occupation_starts_with: String
+
+  """All values not starting with the given string."""
+  occupation_not_starts_with: String
+
+  """All values ending with the given string."""
+  occupation_ends_with: String
+
+  """All values not ending with the given string."""
+  occupation_not_ends_with: String
   studying: String
 
   """All values that are not equal to given value."""
@@ -1336,6 +1359,46 @@ input UserWhereInput {
 
   """All values not ending with the given string."""
   working_not_ends_with: String
+  userExtra: String
+
+  """All values that are not equal to given value."""
+  userExtra_not: String
+
+  """All values that are contained in given list."""
+  userExtra_in: [String!]
+
+  """All values that are not contained in given list."""
+  userExtra_not_in: [String!]
+
+  """All values less than the given value."""
+  userExtra_lt: String
+
+  """All values less than or equal the given value."""
+  userExtra_lte: String
+
+  """All values greater than the given value."""
+  userExtra_gt: String
+
+  """All values greater than or equal the given value."""
+  userExtra_gte: String
+
+  """All values containing the given string."""
+  userExtra_contains: String
+
+  """All values not containing the given string."""
+  userExtra_not_contains: String
+
+  """All values starting with the given string."""
+  userExtra_starts_with: String
+
+  """All values not starting with the given string."""
+  userExtra_not_starts_with: String
+
+  """All values ending with the given string."""
+  userExtra_ends_with: String
+
+  """All values not ending with the given string."""
+  userExtra_not_ends_with: String
   links_every: LinkWhereInput
   links_some: LinkWhereInput
   links_none: LinkWhereInput
