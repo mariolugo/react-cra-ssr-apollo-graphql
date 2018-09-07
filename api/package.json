@@ -2,7 +2,7 @@
   "name": "hackernews-graphql-js",
   "scripts": {
     "start": "HOSTNAME=localhost:4000 FBHOST=localhost:3000 nodemon src/index.js",
-    "qa": "PORT=4000 HOSTNAME=138.68.24.184 node start",
+    "qa": "PORT=4000 HOSTNAME=138.68.24.184 node src/index.js",
     "dev": "npm-run-all --parallel start playground",
     "playground": "graphql playground",
     "prisma": "prisma"
