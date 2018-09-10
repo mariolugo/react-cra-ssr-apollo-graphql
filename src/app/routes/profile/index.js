@@ -225,7 +225,7 @@ class Profile extends Component {
                       <Typography variant="title" gutterBottom align="left">
                         Idiomas
                       </Typography>
-                      {(typeof user.languages !== 'undefined' && user.languages.length > 0) &&
+                      {(typeof user.languages !== 'undefined' && Array.isArray(user.languages) && user.languages.length > 0) &&
                           <div className={classes.chips}>
                             {user.languages.map(language => (
                               <Chip
@@ -401,7 +401,7 @@ class Profile extends Component {
                 }
 
             </Paper>
-            { (typeof user.userPersonality !== 'undefined' && user.userPersonality.length > 0) &&
+            { (typeof user.userPersonality !== 'undefined' && Array.isArray(user.userPersonality) && user.userPersonality.length > 0) &&
                 <Paper className={classes.paperRight}>
                     <Grid item xs={12} className={classes.paddingSides10}>
                         <Typography variant="title" gutterBottom align="left">
@@ -423,7 +423,7 @@ class Profile extends Component {
                     </Grid>
                 </Paper>
             }
-            { (typeof user.userLifeStyle !== 'undefined' && user.userLifeStyle.length > 0) &&
+            { (typeof user.userLifeStyle !== 'undefined' && Array.isArray(user.userLifeStyle) && user.userLifeStyle.length > 0) &&
                 <Paper className={classes.paperRight}>
                     <Grid item xs={12} className={classes.paddingSides10}>
                         <Typography variant="title" gutterBottom align="left">
@@ -445,7 +445,7 @@ class Profile extends Component {
                     </Grid>
                 </Paper>
             }
-            { (typeof user.userMusic !== 'undefined' && user.userMusic.length > 0) &&
+            { (typeof user.userMusic !== 'undefined' && Array.isArray(user.userMusic) && user.userMusic.length > 0) &&
                 <Paper className={classes.paperRight}>
                     <Grid item xs={12} className={classes.paddingSides10}>
                         <Typography variant="title" gutterBottom align="left">
@@ -467,7 +467,7 @@ class Profile extends Component {
                     </Grid>
                 </Paper>
             }
-            { (typeof user.userSports !== 'undefined' && user.userSports.length > 0) &&
+            { (typeof user.userSports !== 'undefined' && Array.isArray(user.userSports) && user.userSports.length > 0) &&
                 <Paper className={classes.paperRight}>
                     <Grid item xs={12} className={classes.paddingSides10}>
                         <Typography variant="title" gutterBottom align="left">
@@ -489,7 +489,7 @@ class Profile extends Component {
                     </Grid>
                 </Paper>
             }
-            { (typeof user.userMovies !== 'undefined' && user.userMovies.length > 0) &&
+            { (typeof user.userMovies !== 'undefined' && Array.isArray(user.userMovies) && user.userMovies.length > 0) &&
                 <Paper className={classes.paperRight}>
                     <Grid item xs={12} className={classes.paddingSides10}>
                         <Typography variant="title" gutterBottom align="left">
