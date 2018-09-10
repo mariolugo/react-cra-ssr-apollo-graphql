@@ -15,11 +15,11 @@ import { split } from 'apollo-link'
 import { WebSocketLink } from 'apollo-link-ws'
 import { getMainDefinition } from 'apollo-utilities'
 import cookies from 'js-cookie';
-const HOSTNAME = process.env.HOSTNAME;
-console.log('HOSTNAME',HOSTNAME);
-
 import App from './app/app';
 import './index.css';
+
+const HOSTNAME = process.env.HOSTNAME;
+console.log('HOSTNAME',HOSTNAME);
 
 // Create a store and get back itself and its history object
 const { store, history } = createStore();
