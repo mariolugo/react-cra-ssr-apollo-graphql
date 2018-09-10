@@ -16,6 +16,7 @@ import { WebSocketLink } from 'apollo-link-ws'
 import { getMainDefinition } from 'apollo-utilities'
 import cookies from 'js-cookie';
 const HOSTNAME = process.env.HOSTNAME;
+console.log('HOSTNAME',HOSTNAME);
 
 import App from './app/app';
 import './index.css';
