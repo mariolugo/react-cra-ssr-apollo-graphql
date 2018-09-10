@@ -1,5 +1,5 @@
 apps:
-  - script   : yarn run qa
+  - script   : PORT=80 HOSTNAME=138.68.24.184 react-scripts start
     name     : 'roomies-app'
     env    :
       NODE_ENV: development
