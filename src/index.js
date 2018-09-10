@@ -25,11 +25,11 @@ console.log('HOSTNAME',HOSTNAME);
 const { store, history } = createStore();
 
 const httpLink = createHttpLink({
-  uri: `http://${HOSTNAME}:4000`
+  uri: `http://138.68.24.184:4000`
 });
 
 const wsLink = new WebSocketLink({
-  uri: `ws://${HOSTNAME}:4000`,
+  uri: `ws://138.68.24.184:4000`,
   options: {
     reconnect: true,
     connectionParams: {
