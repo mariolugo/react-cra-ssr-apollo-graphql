@@ -1,0 +1,8 @@
+apps:
+  - script   : ./src/index.js
+    name     : 'roomies-api'
+    env    :
+      NODE_ENV: development
+      APP_NAME: roomies-api
+      PORT: 4000
+      HOSTNAME: 138.68.24.184
