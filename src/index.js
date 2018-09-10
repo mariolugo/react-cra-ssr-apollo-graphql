@@ -14,7 +14,8 @@ import { AUTH_TOKEN } from './constants'
 import { split } from 'apollo-link'
 import { WebSocketLink } from 'apollo-link-ws'
 import { getMainDefinition } from 'apollo-utilities'
-import cookies from 'js-cookie'
+import cookies from 'js-cookie';
+const HOSTNAME = process.env.HOSTNAME;
 
 import App from './app/app';
 import './index.css';
@@ -23,11 +24,11 @@ import './index.css';
 const { store, history } = createStore();
 
 const httpLink = createHttpLink({
-  uri: 'http://localhost:4000'
+  uri: `http://${HOSTNAME}:4000`
 });
 
 const wsLink = new WebSocketLink({
-  uri: `ws://localhost:4000`,
+  uri: `ws://${HOSTNAME}:4000`,
   options: {
     reconnect: true,
     connectionParams: {

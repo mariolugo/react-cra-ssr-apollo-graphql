@@ -61,7 +61,7 @@ export default (req, res) => {
 
 
   const wsLink = process.browser ? new WebSocketLink({ // if you instantiate in the server, the error will be thrown
-    uri: `http://${HOSTNAME}:4000`,
+    uri: `ws://${HOSTNAME}:4000`,
     options: {
       reconnect: true
     }
