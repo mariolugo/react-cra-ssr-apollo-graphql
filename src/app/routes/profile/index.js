@@ -153,13 +153,13 @@ class Profile extends Component {
 
     let birthDayUsr;
 
-    if (typeof user.images !== 'undefined' && user.images.length > 0){
+    if (typeof user.images !== 'undefined' && Array.isArray(user.images) && user.images.length > 0){
         image = user.images[0];
     } else {
         image = logo;
     }
 
-    if (typeof user.birthDay !== 'undefined') {
+    if (typeof user.birthDay !== 'undefined' && user.birthDay) {
         birthDayUsr = this._calculateAge(new Date(user.birthDay));
     }
 
