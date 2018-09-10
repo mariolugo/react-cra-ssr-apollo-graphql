@@ -1,8 +1,8 @@
 apps:
-  - script   : ./server/index.js
+  - script   : yarn run qa
     name     : 'roomies-app'
     env    :
       NODE_ENV: development
       APP_NAME: roomies
-      PORT: 80
+      PORT: 3000
       HOSTNAME: 138.68.24.184
