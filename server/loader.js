@@ -11,6 +11,7 @@ import { Provider } from 'react-redux';
 import { StaticRouter } from 'react-router';
 import { Frontload, frontloadServerRender } from 'react-frontload';
 import Loadable from 'react-loadable';
+const HOSTNAME = process.env.HOSTNAME;
 
 // Our store, entrypoint, and manifest
 import createStore from '../src/store';
@@ -55,12 +56,12 @@ export default (req, res) => {
   };
 
   const httplink = new createHttpLink({
-  	uri: 'http://localhost:4000'
+  	uri: `http://${HOSTNAME}:4000`
   });
 
 
   const wsLink = process.browser ? new WebSocketLink({ // if you instantiate in the server, the error will be thrown
-    uri: `ws://localhost:4000`,
+    uri: `http://${HOSTNAME}:4000`,
     options: {
       reconnect: true
     }
