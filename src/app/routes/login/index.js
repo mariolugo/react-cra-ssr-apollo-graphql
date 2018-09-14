@@ -184,7 +184,7 @@ class Login extends Component {
 
     } else {
       this._saveUserData(token, user);
-      this.props.history.push(`/`);
+      this.props.history.push(`/dashboard`);
     }
   }
 

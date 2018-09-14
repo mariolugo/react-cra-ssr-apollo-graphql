@@ -17,6 +17,7 @@ type Mutation {
   facebookSignIn(code: String!): AuthPayload
   editUser(firstName: String!, lastName: String!, gender: String, occupation: String, studying: String, birthDay: DateTime, working: String, languages: [String!], userPersonality: [String!], userLifeStyle: [String!], userMusic: [String!], userSports: [String!], userMovies: [String!], userExtra: String, images: [String!]): User
   facebookConnect(code: String!): User
+  editUserTags(userPersonality: [String!], userLifeStyle: [String!], userMusic: [String!], userSports: [String!], userMovies: [String!]): User
 }
 
 type AuthPayload {

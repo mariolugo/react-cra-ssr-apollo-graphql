@@ -51,6 +51,7 @@ import ReactDropzone from 'react-dropzone';
 import {Image, Video, Transformation, CloudinaryContext} from 'cloudinary-react';
 import request from 'superagent';
 import { isServer } from '../../../store';
+import {SortableContainer, SortableElement, arrayMove} from 'react-sortable-hoc';
 
 const CLOUDINARY_UPLOAD_PRESET = 'pizwwixc';
 const CLOUDINARY_UPLOAD_URL = 'https://api.cloudinary.com/v1_1/roomies-ic/upload';
@@ -94,6 +95,47 @@ const MenuProps = {
   },
 };
 
+const SortableItem = SortableElement(({value, sortIndex, onRemove, classes,imgLoading }) =>
+  <Grid item xs={4} className={classes.imageGrid}>
+    <div
+      tabIndex={0}
+      role="button"
+      className={classes.imageButton}
+      onClick={() => {
+           console.log('aaa');
+            onRemove(sortIndex)
+        }}
+    >
+       <Button variant="fab" mini color="secondary" aria-label="Delete" className={classes.button} >
+         <CloseIcon />
+       </Button>
+    </div>
+    {sortIndex === 0 &&
+        <div className={classes.starDiv}>
+          <StarRateIcon style={{color:'white'}} />
+        </div>
+    }
+    <img
+      alt="Preview"
+      src={value}
+      className={classes.images}
+    />
+  </Grid>
+);
+
+const SortableList = SortableContainer(({items, onRemove, classes}) => {
+   return (
+    <Grid container spacing={24}>
+       {items.map((image, index) => (
+         <SortableItem key={`item-${index}`} index={index} value={image} sortIndex={index} onRemove={onRemove} classes={classes} />
+       ))}
+     </Grid>
+
+ );
+});
+
+
+
 class UserEdit extends React.Component {
   state = {
     top: false,
@@ -123,8 +165,12 @@ class UserEdit extends React.Component {
     selectedDrawerTab: 'personality',
     userTags: {},
     files: [],
-    imgLoading: false
+    imgLoading: false,
+    dayBirth: '',
+    monthBirth: '',
+    yearBirth: ''
   };
+
 
   parentWidth = React.createRef();
 
@@ -191,6 +237,16 @@ class UserEdit extends React.Component {
         images: []
       });
     }
+
+    if (this.state.birthDay) {
+      let date = new Date(this.state.birthDay);
+
+      this.setState({
+        dayBirth: date.getUTCDate().toString(),
+        monthBirth: this.numToMonth(date.getUTCMonth()),
+        yearBirth: date.getUTCFullYear().toString()
+      });
+    }
   }
 
   componentWillUnmount() {
@@ -217,6 +273,13 @@ class UserEdit extends React.Component {
     }
   };
 
+  onSortEnd = ({oldIndex, newIndex}) => {
+    this.setState({
+      images: arrayMove(this.state.images, oldIndex, newIndex),
+    });
+    console.log(this.state.images, oldIndex, newIndex);
+  };
+
   monthToNumb = (mth) => {
       const months = [
         'january', 'february', 'march', 'april', 'may',
@@ -225,7 +288,17 @@ class UserEdit extends React.Component {
       ];
       let month = months.indexOf(mth);
       return month ? month + 1 : 0;
-  }
+  };
+
+  numToMonth = (num) => {
+    const months = [
+      'january', 'february', 'march', 'april', 'may',
+      'june', 'july', 'august', 'september',
+      'october', 'november', 'december'
+    ];
+    console.log('aaaa',months[num-1]);
+    return months[num-1];
+  };
 
   _handleDrawerTab = panel => (event, expanded) => {
     this.setState({
@@ -287,11 +360,11 @@ class UserEdit extends React.Component {
 
   render(){
     const { classes } = this.props;
-    const { parentWidth, firstName, lastName, gender, occupation, studying, working, languages, userPersonality, userLifeStyle, userMusic, userSports, userMovies, userExtra, images, birthDay, dates, jobs, studies, languagesArr, selectedDrawerTab, userTags, id } = this.state;
+    const { parentWidth, firstName, lastName, gender, occupation, studying, working, languages, userPersonality, userLifeStyle, userMusic, userSports, userMovies, userExtra, images, birthDay, dates, jobs, studies, languagesArr, selectedDrawerTab, userTags, id, dayBirth, monthBirth, yearBirth } = this.state;
 
-    let dayBirth = '26';
-    let monthBirth = 'december';
-    let yearBirth = '1992';
+    console.log(dayBirth, monthBirth, yearBirth)
+
+
 
     let finalDate = new Date(yearBirth, this.monthToNumb(monthBirth) -1, dayBirth);
 
@@ -356,6 +429,9 @@ class UserEdit extends React.Component {
                         fullWidth
                         placeholder="Día"
                         label="Día"
+                        onChange={e =>
+                          this.setState({ dayBirth: e.target.value })
+                        }
                         value={dayBirth}
                       >
                         { (dates.hasOwnProperty('days') && dates.days.length > 0) && dates.days.map((day,index) => {
@@ -373,6 +449,9 @@ class UserEdit extends React.Component {
                         fullWidth
                         placeholder="Mes"
                         label="Mes"
+                        onChange={e =>
+                          this.setState({ monthBirth: e.target.value })
+                        }
                         value={monthBirth}
                       >
                         { (dates.hasOwnProperty('months') && dates.months.length > 0) && dates.months.map((month,index) => {
@@ -390,6 +469,9 @@ class UserEdit extends React.Component {
                         fullWidth
                         placeholder="Año"
                         label="Año"
+                        onChange={e =>
+                          this.setState({ yearBirth: e.target.value })
+                        }
                         value={yearBirth}
                       >
                         { (dates.hasOwnProperty('years') && dates.years.length > 0) && dates.years.map((year,index) => {
@@ -763,36 +845,9 @@ class UserEdit extends React.Component {
                                 </Typography>
                             </Grid>
 
-                            {images && images.map((file,index) => (
-                                <Grid key={index} item xs={4} className={classes.imageGrid}>
-                                    <div
-                                      tabIndex={0}
-                                      role="button"
-                                      className={classes.imageButton}
-                                    >
-                                      <div >
-                                          {this.state.imgLoading}
-                                          <Button variant="fab" mini color="secondary" aria-label="Delete" className={classes.button} onClick={() => {
-                                                this.removeImageIndex(index)
-                                            }}>
-                                            <CloseIcon />
-                                          </Button>
-                                      </div>
-                                    </div>
-                                    {index === 0 &&
-                                        <div className={classes.starDiv}>
-                                          <StarRateIcon style={{color:'white'}} />
-                                        </div>
-                                    }
-                                    <img
-                                      alt="Preview"
-                                      key={index}
-                                      src={file}
-                                      className={classes.images}
-                                    />
+                            <SortableList items={images} onSortEnd={this.onSortEnd} onRemove={(index) => this.removeImageIndex(index)} imgLoading={this.state.imgLoading} classes={classes} axis={'xy'}/>
 
-                                </Grid>
-                            ))}
+
                         </Grid>
 
                     }

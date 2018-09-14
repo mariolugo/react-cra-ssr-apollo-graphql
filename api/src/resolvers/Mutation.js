@@ -234,6 +234,18 @@ async function facebookConnect(parent, args, ctx, info) {
   return userFound;
 }
 
+async function editUserTags(parent, args, ctx, info) {
+  const userId = getUserId(ctx);
+
+  const editedUser = await ctx.db.mutation.updateUser({
+    data: { ...args },
+    where: { id: userId }
+  });
+
+  return editedUser;
+}
+
+
 
 module.exports = {
   post,
@@ -242,5 +254,6 @@ module.exports = {
   vote,
   facebookSignIn,
   editUser,
-  facebookConnect
+  facebookConnect,
+  editUserTags
 }
