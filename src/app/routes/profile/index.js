@@ -265,14 +265,12 @@ class Profile extends Component {
     });
   };
 
-  toggleDrawer = (side, open, tab) => () => {
+  toggleDrawer = (side, open, tab, update) => () => {
      this.setState({
        [side]: open,
      });
 
-     console.log(open);
-
-     if (!open){
+     if (update){
       this._editUserTags({...this.state.user});
      }
 
@@ -1073,7 +1071,7 @@ class Profile extends Component {
                             type="button"
                             fullWidth
                             variant="raised"
-                            onClick={this.toggleDrawer('left', false)}
+                            onClick={this.toggleDrawer('left', false, null, true)}
                             color="primary"
                             className={classes.submit}
                           >
