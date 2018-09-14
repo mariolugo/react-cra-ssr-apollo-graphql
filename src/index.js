@@ -18,8 +18,7 @@ import cookies from 'js-cookie';
 import App from './app/app';
 import './index.css';
 
-const HOSTNAME = process.env.HOSTNAME;
-console.log('HOSTNAME',HOSTNAME);
+// const HOSTNAME = process.env.HOSTNAME;
 
 // Create a store and get back itself and its history object
 const { store, history } = createStore();

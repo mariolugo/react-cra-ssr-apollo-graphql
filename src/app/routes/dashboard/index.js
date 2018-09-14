@@ -1,14 +1,11 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import Page from '../../components/page';
-import { Mutation, compose, graphql } from 'react-apollo'
+import { compose } from 'react-apollo'
 import { withStyles } from '@material-ui/core/styles';
-import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
-import LinearProgress from '@material-ui/core/LinearProgress';
-import PhoneIcon from '@material-ui/icons/Phone';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import PersonPinIcon from '@material-ui/icons/PersonPin';
 import FeedbackIcon from '@material-ui/icons/Feedback'
@@ -17,20 +14,8 @@ import SettingsIcon from '@material-ui/icons/Settings'
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import './dashboard.css';
-import AppBar from '@material-ui/core/AppBar';
 import Badge from '@material-ui/core/Badge';
-import logo from '../../assets/logo.jpg';
-import { Link } from "react-router-dom";
-import Button from '@material-ui/core/Button';
 import Profile from '../profile'
-
-function TabContainer(props) {
-  return (
-    <Typography component="div" style={{ padding: 8 * 3 }}>
-      {props.children}
-    </Typography>
-  );
-}
 
 class Dashboard extends React.Component {
     state = {

@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { frontloadConnect } from 'react-frontload';
-import Page from '../../components/page';
-import { Mutation, compose, graphql } from 'react-apollo'
+// import { frontloadConnect } from 'react-frontload';
+import { compose, graphql } from 'react-apollo'
 import { withStyles } from '@material-ui/core/styles';
 import gql from 'graphql-tag'
 import Paper from '@material-ui/core/Paper';
@@ -11,17 +10,7 @@ import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
 import LinearProgress from '@material-ui/core/LinearProgress';
-import PhoneIcon from '@material-ui/icons/Phone';
-import FavoriteIcon from '@material-ui/icons/Favorite';
-import PersonPinIcon from '@material-ui/icons/PersonPin';
-import FeedbackIcon from '@material-ui/icons/Feedback'
-import ChatIcon from '@material-ui/icons/Chat';
-import SettingsIcon from '@material-ui/icons/Settings'
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
 import Cookies from 'js-cookie';
-import AppBar from '@material-ui/core/AppBar';
-import Badge from '@material-ui/core/Badge';
 import logo from '../../assets/logo.jpg';
 import { Link } from "react-router-dom";
 import Button from '@material-ui/core/Button';
@@ -113,7 +102,6 @@ class Profile extends Component {
     super(props);
 
     if (!isServer) {
-      console.log(props);
       if (props.location.pathname === '/dashboard/facebook-callback') {
         this.code = querystring.parse(props.location.search)['?code'];
       }
@@ -135,7 +123,7 @@ class Profile extends Component {
     this.setState({
       loading: true
     });
-     console.log(this.code);
+
     if (!this.code) {
       this.setState({
         loading: false
@@ -173,8 +161,6 @@ class Profile extends Component {
   }
 
   componentDidMount() {
-
-
       this.setState({
         userTags: userTagsUtil
       });
@@ -187,15 +173,16 @@ class Profile extends Component {
   }
 
   _editUserTags(prop) {
-    console.log({prop})
+    console.log(prop);
     this.setState({prop});
     const { editUserTags } = this.props;
-    const { userPersonality, userLifeStyle, userMusic, userSports, userMovies } = this.state.user;
+    const { userPersonality, userLifeStyle, userMusic, userSports, userMovies } = prop;
     editUserTags({
-      userPersonality, userLifeStyle, userMusic, userSports, userMovies
+      variables: {
+        userPersonality, userLifeStyle, userMusic, userSports, userMovies
+      }
     })
     .then((response) => {
-      console.log('response',response);
       Cookies.set('br_user',prop);
       this._updatePercentage();
       this._showToast('Gustos actualizados');
@@ -271,10 +258,10 @@ class Profile extends Component {
      });
 
      if (update){
-      this._editUserTags({...this.state.user});
+       this._editUserTags({...this.state.user});
      }
 
-     if (typeof tab !== 'undefined') {
+     if (typeof tab !== 'undefined' && tab) {
        this.setState({
          selectedDrawerTab: tab
        });
@@ -312,8 +299,6 @@ class Profile extends Component {
     if (typeof user.birthDay !== 'undefined' && user.birthDay) {
         birthDayUsr = this._calculateAge(new Date(user.birthDay));
     }
-
-    console.log(birthDayUsr);
 
     return (
         <Grid container spacing={16} className={classes.marginTop15}>
@@ -1071,7 +1056,7 @@ class Profile extends Component {
                             type="button"
                             fullWidth
                             variant="raised"
-                            onClick={this.toggleDrawer('left', false, null, true)}
+                            onClick={this.toggleDrawer('left',false,null,true)}
                             color="primary"
                             className={classes.submit}
                           >

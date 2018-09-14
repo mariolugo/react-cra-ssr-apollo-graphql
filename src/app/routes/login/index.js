@@ -7,7 +7,6 @@ import { setCurrentUser } from '../../../modules/auth';
 import { Mutation, compose, graphql } from 'react-apollo'
 import gql from 'graphql-tag'
 import cookies from 'js-cookie'
-import FacebookLogin from 'react-facebook-login';
 import querystring from 'querystring';
 import FacebookLoginComponent from './FacebookLoginComponent';
 import Button from '@material-ui/core/Button';
@@ -161,7 +160,6 @@ class Login extends Component {
           loading: false
         });
         const { token, user } = response.data.facebookSignIn;
-        console.log('user',user);
         this._saveUserData(token, user);
         this.props.history.push(`/`);
       }).catch(e => {
@@ -189,6 +187,7 @@ class Login extends Component {
   }
 
   _saveUserData = (token, user) => {
+      console.log('login',{user});
     cookies.set(AUTH_TOKEN, token);
     this.props.setCurrentUser(user);
   }

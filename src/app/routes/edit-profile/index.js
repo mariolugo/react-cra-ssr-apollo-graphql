@@ -1,7 +1,6 @@
 import React from 'react';
-import { connect } from 'react-redux';
 import Page from '../../components/page';
-import { Mutation, compose, graphql } from 'react-apollo'
+import { Mutation, compose } from 'react-apollo'
 import gql from 'graphql-tag'
 import { withStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
@@ -48,14 +47,12 @@ import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import userTagsUtil from './userTagsUtil';
 import ReactDropzone from 'react-dropzone';
-import {Image, Video, Transformation, CloudinaryContext} from 'cloudinary-react';
 import request from 'superagent';
 import { isServer } from '../../../store';
 import {SortableContainer, SortableElement, arrayMove} from 'react-sortable-hoc';
 
 const CLOUDINARY_UPLOAD_PRESET = 'pizwwixc';
 const CLOUDINARY_UPLOAD_URL = 'https://api.cloudinary.com/v1_1/roomies-ic/upload';
-const CLOUDINARY_DELETE_URL = 'https://api.cloudinary.com/v1_1/roomies-ic/delete_by_token'
 
 
 const EDIT_USER_MUTATION = gql`
@@ -102,7 +99,6 @@ const SortableItem = SortableElement(({value, sortIndex, onRemove, classes,imgLo
       role="button"
       className={classes.imageButton}
       onClick={() => {
-           console.log('aaa');
             onRemove(sortIndex)
         }}
     >
@@ -277,7 +273,6 @@ class UserEdit extends React.Component {
     this.setState({
       images: arrayMove(this.state.images, oldIndex, newIndex),
     });
-    console.log(this.state.images, oldIndex, newIndex);
   };
 
   monthToNumb = (mth) => {
@@ -296,7 +291,6 @@ class UserEdit extends React.Component {
       'june', 'july', 'august', 'september',
       'october', 'november', 'december'
     ];
-    console.log('aaaa',months[num-1]);
     return months[num-1];
   };
 
@@ -311,7 +305,6 @@ class UserEdit extends React.Component {
   }
 
   handleImageUpload = (file) => {
-      console.log({file});
     let upload = request.post(CLOUDINARY_UPLOAD_URL)
                         .field('upload_preset', CLOUDINARY_UPLOAD_PRESET)
                         .field('file', file);
@@ -326,8 +319,6 @@ class UserEdit extends React.Component {
           this.setState({
             images: this.state.images.concat(response.body.secure_url),
           });
-
-          console.log(this.state.images);
       }
     });
   }
@@ -360,15 +351,9 @@ class UserEdit extends React.Component {
 
   render(){
     const { classes } = this.props;
-    const { parentWidth, firstName, lastName, gender, occupation, studying, working, languages, userPersonality, userLifeStyle, userMusic, userSports, userMovies, userExtra, images, birthDay, dates, jobs, studies, languagesArr, selectedDrawerTab, userTags, id, dayBirth, monthBirth, yearBirth } = this.state;
-
-    console.log(dayBirth, monthBirth, yearBirth)
-
-
+    const { parentWidth, firstName, lastName, gender, occupation, studying, working, languages, userPersonality, userLifeStyle, userMusic, userSports, userMovies, userExtra, images, dates, jobs, studies, languagesArr, selectedDrawerTab, userTags, dayBirth, monthBirth, yearBirth } = this.state;
 
     let finalDate = new Date(yearBirth, this.monthToNumb(monthBirth) -1, dayBirth);
-
-    let dropzoneRef;
 
     return (
       <Page id="userEdit" title="User Edit" styles={{backgroundColor: '#fff', paddingTop: 20}} >
@@ -826,7 +811,6 @@ class UserEdit extends React.Component {
                   accept="image/*"
                   onDrop={this.onPreviewDrop}
                   style={{width:'100%', height: '100%'}}
-                  ref={(node) => { dropzoneRef = node; }}
                   disableClick
                 >
                     {images && images.length === 0 &&

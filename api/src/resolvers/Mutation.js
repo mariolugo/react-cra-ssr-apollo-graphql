@@ -237,6 +237,8 @@ async function facebookConnect(parent, args, ctx, info) {
 async function editUserTags(parent, args, ctx, info) {
   const userId = getUserId(ctx);
 
+  console.log({args});
+
   const editedUser = await ctx.db.mutation.updateUser({
     data: { ...args },
     where: { id: userId }
