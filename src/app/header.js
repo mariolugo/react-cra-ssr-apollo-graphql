@@ -15,6 +15,7 @@ const links = [
   {
     to: "/list",
     text: "Publicar Piso",
+    auth: true
   },
   {
     to: "/",
