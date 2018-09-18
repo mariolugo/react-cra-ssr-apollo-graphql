@@ -1,5 +1,5 @@
 # source: https://us1.prisma.sh/mario-lugo-28cf57/database/dev
-# timestamp: Sun Sep 16 2018 17:34:04 GMT-0500 (CDT)
+# timestamp: Mon Sep 17 2018 22:54:02 GMT-0500 (CDT)
 
 type AggregateLink {
   count: Int!
@@ -457,6 +457,7 @@ type Room implements Node {
   bills: Boolean
   postedBy(where: UserWhereInput): User
   images: Json!
+  createdAt: DateTime!
 }
 
 """A connection to a list of items."""
@@ -565,10 +566,10 @@ enum RoomOrderByInput {
   bills_DESC
   images_ASC
   images_DESC
-  updatedAt_ASC
-  updatedAt_DESC
   createdAt_ASC
   createdAt_DESC
+  updatedAt_ASC
+  updatedAt_DESC
 }
 
 type RoomPreviousValues {
@@ -591,6 +592,7 @@ type RoomPreviousValues {
   price: Int
   bills: Boolean
   images: Json!
+  createdAt: DateTime!
 }
 
 type RoomSubscriptionPayload {
@@ -1160,6 +1162,28 @@ input RoomWhereInput {
 
   """All values that are not equal to given value."""
   bills_not: Boolean
+  createdAt: DateTime
+
+  """All values that are not equal to given value."""
+  createdAt_not: DateTime
+
+  """All values that are contained in given list."""
+  createdAt_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  createdAt_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  createdAt_lt: DateTime
+
+  """All values less than or equal the given value."""
+  createdAt_lte: DateTime
+
+  """All values greater than the given value."""
+  createdAt_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  createdAt_gte: DateTime
   postedBy: UserWhereInput
 }
 
