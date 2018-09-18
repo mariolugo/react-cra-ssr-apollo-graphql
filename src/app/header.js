@@ -6,12 +6,16 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
-import MenuIcon from '@material-ui/icons/Menu';
+// import MenuIcon from '@material-ui/icons/Menu';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 
 const links = [
+  {
+    to: "/list",
+    text: "Publicar Piso",
+  },
   {
     to: "/",
     text: "Homepage"
@@ -28,15 +32,15 @@ const links = [
   },
 ];
 
-const isCurrent = (to, current) => {
-  if (to === "/" && current === to) {
-    return true;
-  } else if (to !== "/" && current.includes(to)) {
-    return true;
-  }
-
-  return false;
-};
+// const isCurrent = (to, current) => {
+//   if (to === "/" && current === to) {
+//     return true;
+//   } else if (to !== "/" && current.includes(to)) {
+//     return true;
+//   }
+//
+//   return false;
+// };
 
 const HeaderLink = ({ to, text, current, currentUser, open, handleClick, handleClose, anchorEl }) => {
   if (to === "/dashboard") {

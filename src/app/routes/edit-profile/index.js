@@ -330,7 +330,7 @@ class UserEdit extends React.Component {
       let length = this.state.images.length + files.length;
       if (length <= 6){
           files.map( file => {
-              this.handleImageUpload(file)
+              return this.handleImageUpload(file)
           });
       }
       this.setState({
@@ -550,7 +550,6 @@ class UserEdit extends React.Component {
                     </Grid>
                     <Grid item xs={12} sm={12}>
                       <Select
-                        value={10}
                         fullWidth
                         value={working}
                         onChange={e =>
@@ -636,8 +635,7 @@ class UserEdit extends React.Component {
                             key={index}
                             color="primary"
                             className={classes.chip}
-                            label={tag}
-                            color="primary" />
+                            label={tag}/>
                           );
                        }) }
                       </div>
@@ -661,8 +659,7 @@ class UserEdit extends React.Component {
                             key={index}
                             color="primary"
                             className={classes.chip}
-                            label={tag}
-                            color="primary" />
+                            label={tag}/>
                           );
                        }) }
                       </div>
@@ -686,8 +683,7 @@ class UserEdit extends React.Component {
                             key={index}
                             color="primary"
                             className={classes.chip}
-                            label={tag}
-                            color="primary" />
+                            label={tag}/>
                           );
                        }) }
                       </div>
@@ -711,8 +707,7 @@ class UserEdit extends React.Component {
                             key={index}
                             color="primary"
                             className={classes.chip}
-                            label={tag}
-                            color="primary" />
+                            label={tag}/>
                           );
                        }) }
                       </div>
@@ -736,8 +731,7 @@ class UserEdit extends React.Component {
                             key={index}
                             color="primary"
                             className={classes.chip}
-                            label={tag}
-                            color="primary" />
+                            label={tag}/>
                           );
                        }) }
                       </div>
@@ -829,7 +823,14 @@ class UserEdit extends React.Component {
                                 </Typography>
                             </Grid>
 
-                            <SortableList items={images} onSortEnd={this.onSortEnd} onRemove={(index) => this.removeImageIndex(index)} imgLoading={this.state.imgLoading} classes={classes} axis={'xy'}/>
+                            <SortableList
+                              items={images}
+                              onSortEnd={this.onSortEnd}
+                              pressDelay={100}
+                              onRemove={(index) => this.removeImageIndex(index)}
+                              imgLoading={this.state.imgLoading}
+                              classes={classes}
+                              axis={'xy'}/>
 
 
                         </Grid>
@@ -890,8 +891,7 @@ class UserEdit extends React.Component {
                            this.setState({
                              userPersonality
                            });
-                         }}
-                         color="primary" />
+                         }}/>
                      );
                    } else {
                      return(
@@ -945,8 +945,7 @@ class UserEdit extends React.Component {
                            this.setState({
                              userLifeStyle
                            });
-                         }}
-                         color="primary" />
+                         }}/>
                      );
                    } else {
                      return(
@@ -1000,8 +999,7 @@ class UserEdit extends React.Component {
                            this.setState({
                              userMusic
                            });
-                         }}
-                         color="primary" />
+                         }}/>
                      );
                    } else {
                      return(
@@ -1055,8 +1053,7 @@ class UserEdit extends React.Component {
                            this.setState({
                              userSports
                            });
-                         }}
-                         color="primary" />
+                         }}/>
                      );
                    } else {
                      return(
@@ -1110,8 +1107,7 @@ class UserEdit extends React.Component {
                            this.setState({
                              userMovies
                            });
-                         }}
-                         color="primary" />
+                         }}/>
                      );
                    } else {
                      return(

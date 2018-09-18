@@ -13,10 +13,35 @@ type Link {
   votes: [Vote!]!
 }
 
+type Room {
+  id: ID! @unique
+  title: String!
+  description: String!
+  city: String!
+  address: String!
+  latLng: Json
+  country: String!
+  amenities: Json!
+  type: String!
+  males: Int
+  females: Int
+  rules: Json!
+  bed: String
+  fromDate: DateTime
+  toDate: DateTime
+  minMonths: Int
+  price: Int
+  bills: Boolean
+  postedBy: User
+  images: Json!
+  createdAt: DateTime!
+}
+
 type User {
   id: ID! @unique
   firstName: String!
   lastName: String
+  rooms: [Room!]!
   role: Int! @default(value: 1)
   email: String! @unique
   password: String!

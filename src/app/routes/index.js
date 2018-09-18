@@ -3,7 +3,7 @@ import { Route, Switch } from 'react-router-dom';
 import AuthenticatedRoute from '../components/authenticated-route';
 import UnauthenticatedRoute from '../components/unauthenticated-route';
 import Loadable from 'react-loadable';
-import Search from '../routes/homepage/Search'
+import Search from '../routes/homepage/Search';
 
 import NotFound from './not-found';
 
@@ -43,12 +43,26 @@ const UserEdit = Loadable({
   modules: ['edit-profile']
 });
 
+const ListRoom = Loadable({
+    loader: () => import(/* webpackChunkName: "list-room" */ './list-room'),
+    loading: () => null,
+    modules: ['list-room']
+});
+
+const Room = Loadable({
+    loader: () => import(/* webpackChunkName: "room" */ './room'),
+    loading: () => null,
+    modules: ['room']
+});
+
 export default () => (
   <Switch>
     <Route exact path="/" component={Homepage} />
     <Route exact path="/about" component={About} />
 
     <Route exact path="/search" component={Search} />
+    <Route exact path="/list" component={ListRoom} />
+    <Route exact path="/room/:id" component={Room} />
 
     <AuthenticatedRoute path="/dashboard" component={Dashboard} />
 

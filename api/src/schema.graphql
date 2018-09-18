@@ -1,11 +1,12 @@
-# import Link, Vote, LinkSubscriptionPayload, VoteSubscriptionPayload from "./generated/prisma.graphql"
+# import Link, Room, Vote, LinkSubscriptionPayload, VoteSubscriptionPayload from "./generated/prisma.graphql"
 
 type Query {
   feed(filter: String, skip: Int, first: Int, orderBy: LinkOrderByInput): Feed!
+  getRoom(id: String): Room!
 }
 
 type Feed {
-  links: [Link!]!
+  rooms: [Room!]!
   count: Int!
 }
 
@@ -18,33 +19,12 @@ type Mutation {
   editUser(firstName: String!, lastName: String!, gender: String, occupation: String, studying: String, birthDay: DateTime, working: String, languages: [String!], userPersonality: [String!], userLifeStyle: [String!], userMusic: [String!], userSports: [String!], userMovies: [String!], userExtra: String, images: [String!]): User
   facebookConnect(code: String!): User
   editUserTags(userPersonality: [String!], userLifeStyle: [String!], userMusic: [String!], userSports: [String!], userMovies: [String!]): User
+  postRoom(title: String!, description: String!, city: String!, address: String!, country: String!, latLng: Json, amenities: [String!], type: String!, males: Int, females: Int, rules: [String!], bed: String, fromDate: DateTime, toDate: DateTime, minMonths: Int, price: Int, bills: Boolean, images: [String!]): Room!
 }
 
 type AuthPayload {
   token: String
   user: User
-}
-
-type User {
-  id: ID!
-  firstName: String!
-  lastName: String
-  email: String!
-  isVerified: Boolean!
-  facebookId: String
-  gender: String
-  occupation: String
-  studying: String
-  birthDay: DateTime
-  working: String
-  languages: [String!]
-  userPersonality: [String!]
-  userLifeStyle: [String!]
-  userMusic: [String!]
-  userSports: [String!]
-  userMovies: [String!]
-  userExtra: String
-  images: [String!]
 }
 
 type Subscription {

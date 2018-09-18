@@ -247,7 +247,22 @@ async function editUserTags(parent, args, ctx, info) {
   return editedUser;
 }
 
+async function postRoom(parent, args, ctx, info) {
+  const userId = getUserId(ctx);
 
+  console.log({args});
+
+  return ctx.db.mutation.createRoom({
+    data: {
+      ...args,
+      postedBy: {
+        connect: {
+          id: userId
+        }
+      }
+    }
+  }, info);
+}
 
 module.exports = {
   post,
@@ -257,5 +272,6 @@ module.exports = {
   facebookSignIn,
   editUser,
   facebookConnect,
-  editUserTags
+  editUserTags,
+  postRoom
 }

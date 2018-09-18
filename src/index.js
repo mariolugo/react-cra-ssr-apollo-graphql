@@ -24,11 +24,11 @@ import './index.css';
 const { store, history } = createStore();
 
 const httpLink = createHttpLink({
-  uri: `http://138.68.24.184:4000`
+  uri: `http://localhost:4000`
 });
 
 const wsLink = new WebSocketLink({
-  uri: `ws://138.68.24.184:4000`,
+  uri: `ws://localhost:4000`,
   options: {
     reconnect: true,
     connectionParams: {
