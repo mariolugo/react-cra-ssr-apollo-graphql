@@ -61,7 +61,7 @@ export default () => (
     <Route exact path="/about" component={About} />
 
     <Route exact path="/search" component={Search} />
-    <Route exact path="/list" component={ListRoom} />
+    <AuthenticatedRoute exact path="/list" component={ListRoom} />
     <Route exact path="/room/:id" component={Room} />
 
     <AuthenticatedRoute path="/dashboard" component={Dashboard} />
