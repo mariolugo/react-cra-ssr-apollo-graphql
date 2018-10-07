@@ -33,6 +33,7 @@ const GET_ROOM_QUERY = gql`
       price
       bills
       postedBy {
+        id
         firstName
         lastName
         images
@@ -139,7 +140,6 @@ class Room extends Component {
         title="Room"
         styles={{ backgroundColor: "#fff", paddingTop: 20 }}
       >
-        {}
         <Query query={GET_ROOM_QUERY} variables={{ id: roomId }}>
           {({ loading, error, data }) => {
             if (loading) return <p>cargando</p>;

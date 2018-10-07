@@ -10,8 +10,9 @@
   "dependencies": {
     "apollo-server": "^2.0.2",
     "bcryptjs": "^2.4.3",
+    "geolib": "^2.0.24",
     "graphql-yoga": "1.14.12",
-    "prisma-binding": "2.1.1"
+    "prisma-binding": "^2.1.6"
   },
   "devDependencies": {
     "graphql-cli": "2.16.5",

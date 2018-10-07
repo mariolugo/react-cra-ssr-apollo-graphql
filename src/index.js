@@ -58,8 +58,10 @@ const link = split(
 
 const client = new ApolloClient({
   link,
-  cache: new InMemoryCache().restore(window.__APOLLO_STATE__)
+  cache: new InMemoryCache()
 });
+
+// .restore(window.__APOLLO_STATE__)
 
 // Running locally, we should run on a <ConnectedRouter /> rather than on a <StaticRouter /> like on the server
 // Let's also let React Frontload explicitly know we're not rendering on the server here

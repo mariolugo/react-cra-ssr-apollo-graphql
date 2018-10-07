@@ -3,7 +3,6 @@ import { Route, Switch } from 'react-router-dom';
 import AuthenticatedRoute from '../components/authenticated-route';
 import UnauthenticatedRoute from '../components/unauthenticated-route';
 import Loadable from 'react-loadable';
-import Search from '../routes/homepage/Search';
 
 import NotFound from './not-found';
 
@@ -53,6 +52,12 @@ const Room = Loadable({
     loader: () => import(/* webpackChunkName: "room" */ './room'),
     loading: () => null,
     modules: ['room']
+});
+
+const Search = Loadable({
+    loader: () => import(/* webpackChunkName: "search" */ './search'),
+    loading: () => null,
+    modules: ['search']
 });
 
 export default () => (

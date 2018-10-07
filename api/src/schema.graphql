@@ -1,7 +1,7 @@
-# import Link, Room, Vote, LinkSubscriptionPayload, VoteSubscriptionPayload from "./generated/prisma.graphql"
+# import Link, Room, Vote, LinkSubscriptionPayload, VoteSubscriptionPayload, RoomOrderByInput from "./generated/prisma.graphql"
 
 type Query {
-  feed(filter: String, skip: Int, first: Int, orderBy: LinkOrderByInput): Feed!
+  feed(filter: String, latLng: String, skip: Int, first: Int, orderBy: RoomOrderByInput, radius: String, maxPrice: Int, amenities: Json, bed: String): Feed!
   getRoom(id: String): Room!
 }
 
