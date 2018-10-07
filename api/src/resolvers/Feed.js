@@ -39,7 +39,7 @@ async function rooms(parent, args, context, info) {
       roomsToSend = roomsWithBed;
     }
 
-    if (amenities.length > 0) {
+    if (typeof amenities !== 'undefined' && amenities.length > 0) {
       const anyMatchInArray = (array, ams) => {
         "use strict";
 
