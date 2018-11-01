@@ -1,0 +1,32 @@
+.discussion {
+  margin: 0 auto;
+  display: flex;
+  flex-flow: column wrap;
+}
+
+.discussion>.bubble {
+  border-radius: 1em;
+  padding: 10px;
+  margin-bottom: 10px;
+  max-width: 50%;
+}
+
+.chat {
+  height: 500px;
+  overflow: scroll;
+}
+
+.discussion>.bubble.sender {
+  align-self: flex-start;
+  background-color: cornflowerblue;
+  color: #fff;
+}
+
+.discussion>.bubble.recipient {
+  align-self: flex-end;
+  background-color: #efefef;
+}
+
+.inputChat {
+  width: 300px;
+}

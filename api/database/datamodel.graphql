@@ -66,3 +66,29 @@ type User {
   userMovies: Json
   userExtra: String
 }
+
+type ChatRoom {
+  id: ID! @unique
+  room: Room
+  request: Request
+  owner: ID
+  withUser: User
+  createdAt: DateTime!
+}
+
+type Message {
+  id: ID! @unique
+  createdAt: DateTime!
+  message: String!
+  chat: Request
+  author: User
+}
+
+type Request {
+  id: ID! @unique
+  createdBy: User
+  requestUser: ID!
+  status: Int @default(value: 1)
+  roomId: Room
+  createdAt: DateTime!
+}

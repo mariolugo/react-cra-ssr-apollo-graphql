@@ -1,7 +1,19 @@
 # source: https://us1.prisma.sh/mario-lugo-28cf57/database/dev
-# timestamp: Mon Sep 17 2018 22:54:02 GMT-0500 (CDT)
+# timestamp: Wed Oct 31 2018 15:09:06 GMT-0600 (CST)
+
+type AggregateChatRoom {
+  count: Int!
+}
 
 type AggregateLink {
+  count: Int!
+}
+
+type AggregateMessage {
+  count: Int!
+}
+
+type AggregateRequest {
   count: Int!
 }
 
@@ -22,6 +34,228 @@ type BatchPayload {
   count: Long!
 }
 
+type ChatRoom implements Node {
+  id: ID!
+  room: Room
+  request: Request
+  owner: ID
+  withUser: User
+  createdAt: DateTime!
+}
+
+"""A connection to a list of items."""
+type ChatRoomConnection {
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """A list of edges."""
+  edges: [ChatRoomEdge]!
+  aggregate: AggregateChatRoom!
+}
+
+input ChatRoomCreateInput {
+  owner: ID
+  room: RoomCreateOneInput
+  request: RequestCreateOneInput
+  withUser: UserCreateOneInput
+}
+
+"""An edge in a connection."""
+type ChatRoomEdge {
+  """The item at the end of the edge."""
+  node: ChatRoom!
+
+  """A cursor for use in pagination."""
+  cursor: String!
+}
+
+enum ChatRoomOrderByInput {
+  id_ASC
+  id_DESC
+  owner_ASC
+  owner_DESC
+  createdAt_ASC
+  createdAt_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+}
+
+type ChatRoomPreviousValues {
+  id: ID!
+  owner: ID
+  createdAt: DateTime!
+}
+
+type ChatRoomSubscriptionPayload {
+  mutation: MutationType!
+  node: ChatRoom
+  updatedFields: [String!]
+  previousValues: ChatRoomPreviousValues
+}
+
+input ChatRoomSubscriptionWhereInput {
+  """Logical AND on all given filters."""
+  AND: [ChatRoomSubscriptionWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [ChatRoomSubscriptionWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [ChatRoomSubscriptionWhereInput!]
+
+  """
+  The subscription event gets dispatched when it's listed in mutation_in
+  """
+  mutation_in: [MutationType!]
+
+  """
+  The subscription event gets only dispatched when one of the updated fields names is included in this list
+  """
+  updatedFields_contains: String
+
+  """
+  The subscription event gets only dispatched when all of the field names included in this list have been updated
+  """
+  updatedFields_contains_every: [String!]
+
+  """
+  The subscription event gets only dispatched when some of the field names included in this list have been updated
+  """
+  updatedFields_contains_some: [String!]
+  node: ChatRoomWhereInput
+}
+
+input ChatRoomUpdateInput {
+  owner: ID
+  room: RoomUpdateOneInput
+  request: RequestUpdateOneInput
+  withUser: UserUpdateOneInput
+}
+
+input ChatRoomUpdateManyMutationInput {
+  owner: ID
+}
+
+input ChatRoomWhereInput {
+  """Logical AND on all given filters."""
+  AND: [ChatRoomWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [ChatRoomWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [ChatRoomWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+  owner: ID
+
+  """All values that are not equal to given value."""
+  owner_not: ID
+
+  """All values that are contained in given list."""
+  owner_in: [ID!]
+
+  """All values that are not contained in given list."""
+  owner_not_in: [ID!]
+
+  """All values less than the given value."""
+  owner_lt: ID
+
+  """All values less than or equal the given value."""
+  owner_lte: ID
+
+  """All values greater than the given value."""
+  owner_gt: ID
+
+  """All values greater than or equal the given value."""
+  owner_gte: ID
+
+  """All values containing the given string."""
+  owner_contains: ID
+
+  """All values not containing the given string."""
+  owner_not_contains: ID
+
+  """All values starting with the given string."""
+  owner_starts_with: ID
+
+  """All values not starting with the given string."""
+  owner_not_starts_with: ID
+
+  """All values ending with the given string."""
+  owner_ends_with: ID
+
+  """All values not ending with the given string."""
+  owner_not_ends_with: ID
+  createdAt: DateTime
+
+  """All values that are not equal to given value."""
+  createdAt_not: DateTime
+
+  """All values that are contained in given list."""
+  createdAt_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  createdAt_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  createdAt_lt: DateTime
+
+  """All values less than or equal the given value."""
+  createdAt_lte: DateTime
+
+  """All values greater than the given value."""
+  createdAt_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  createdAt_gte: DateTime
+  room: RoomWhereInput
+  request: RequestWhereInput
+  withUser: UserWhereInput
+}
+
+input ChatRoomWhereUniqueInput {
+  id: ID
+}
+
 scalar DateTime
 
 """Raw JSON value"""
@@ -32,7 +266,7 @@ type Link implements Node {
   createdAt: DateTime!
   description: String!
   url: String!
-  postedBy(where: UserWhereInput): User
+  postedBy: User
   votes(where: VoteWhereInput, orderBy: VoteOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Vote!]
 }
 
@@ -148,6 +382,11 @@ input LinkUpdateInput {
   url: String
   postedBy: UserUpdateOneWithoutLinksInput
   votes: VoteUpdateManyWithoutLinkInput
+}
+
+input LinkUpdateManyMutationInput {
+  description: String
+  url: String
 }
 
 input LinkUpdateManyWithoutPostedByInput {
@@ -361,30 +600,265 @@ Long can represent values between -(2^63) and 2^63 - 1.
 """
 scalar Long
 
+type Message implements Node {
+  id: ID!
+  createdAt: DateTime!
+  message: String!
+  chat: Request
+  author: User
+}
+
+"""A connection to a list of items."""
+type MessageConnection {
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """A list of edges."""
+  edges: [MessageEdge]!
+  aggregate: AggregateMessage!
+}
+
+input MessageCreateInput {
+  message: String!
+  chat: RequestCreateOneInput
+  author: UserCreateOneInput
+}
+
+"""An edge in a connection."""
+type MessageEdge {
+  """The item at the end of the edge."""
+  node: Message!
+
+  """A cursor for use in pagination."""
+  cursor: String!
+}
+
+enum MessageOrderByInput {
+  id_ASC
+  id_DESC
+  createdAt_ASC
+  createdAt_DESC
+  message_ASC
+  message_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+}
+
+type MessagePreviousValues {
+  id: ID!
+  createdAt: DateTime!
+  message: String!
+}
+
+type MessageSubscriptionPayload {
+  mutation: MutationType!
+  node: Message
+  updatedFields: [String!]
+  previousValues: MessagePreviousValues
+}
+
+input MessageSubscriptionWhereInput {
+  """Logical AND on all given filters."""
+  AND: [MessageSubscriptionWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [MessageSubscriptionWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [MessageSubscriptionWhereInput!]
+
+  """
+  The subscription event gets dispatched when it's listed in mutation_in
+  """
+  mutation_in: [MutationType!]
+
+  """
+  The subscription event gets only dispatched when one of the updated fields names is included in this list
+  """
+  updatedFields_contains: String
+
+  """
+  The subscription event gets only dispatched when all of the field names included in this list have been updated
+  """
+  updatedFields_contains_every: [String!]
+
+  """
+  The subscription event gets only dispatched when some of the field names included in this list have been updated
+  """
+  updatedFields_contains_some: [String!]
+  node: MessageWhereInput
+}
+
+input MessageUpdateInput {
+  message: String
+  chat: RequestUpdateOneInput
+  author: UserUpdateOneInput
+}
+
+input MessageUpdateManyMutationInput {
+  message: String
+}
+
+input MessageWhereInput {
+  """Logical AND on all given filters."""
+  AND: [MessageWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [MessageWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [MessageWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+  createdAt: DateTime
+
+  """All values that are not equal to given value."""
+  createdAt_not: DateTime
+
+  """All values that are contained in given list."""
+  createdAt_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  createdAt_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  createdAt_lt: DateTime
+
+  """All values less than or equal the given value."""
+  createdAt_lte: DateTime
+
+  """All values greater than the given value."""
+  createdAt_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  createdAt_gte: DateTime
+  message: String
+
+  """All values that are not equal to given value."""
+  message_not: String
+
+  """All values that are contained in given list."""
+  message_in: [String!]
+
+  """All values that are not contained in given list."""
+  message_not_in: [String!]
+
+  """All values less than the given value."""
+  message_lt: String
+
+  """All values less than or equal the given value."""
+  message_lte: String
+
+  """All values greater than the given value."""
+  message_gt: String
+
+  """All values greater than or equal the given value."""
+  message_gte: String
+
+  """All values containing the given string."""
+  message_contains: String
+
+  """All values not containing the given string."""
+  message_not_contains: String
+
+  """All values starting with the given string."""
+  message_starts_with: String
+
+  """All values not starting with the given string."""
+  message_not_starts_with: String
+
+  """All values ending with the given string."""
+  message_ends_with: String
+
+  """All values not ending with the given string."""
+  message_not_ends_with: String
+  chat: RequestWhereInput
+  author: UserWhereInput
+}
+
+input MessageWhereUniqueInput {
+  id: ID
+}
+
 type Mutation {
   createVote(data: VoteCreateInput!): Vote!
   createLink(data: LinkCreateInput!): Link!
+  createChatRoom(data: ChatRoomCreateInput!): ChatRoom!
+  createMessage(data: MessageCreateInput!): Message!
   createRoom(data: RoomCreateInput!): Room!
+  createRequest(data: RequestCreateInput!): Request!
   createUser(data: UserCreateInput!): User!
   updateVote(data: VoteUpdateInput!, where: VoteWhereUniqueInput!): Vote
   updateLink(data: LinkUpdateInput!, where: LinkWhereUniqueInput!): Link
+  updateChatRoom(data: ChatRoomUpdateInput!, where: ChatRoomWhereUniqueInput!): ChatRoom
+  updateMessage(data: MessageUpdateInput!, where: MessageWhereUniqueInput!): Message
   updateRoom(data: RoomUpdateInput!, where: RoomWhereUniqueInput!): Room
+  updateRequest(data: RequestUpdateInput!, where: RequestWhereUniqueInput!): Request
   updateUser(data: UserUpdateInput!, where: UserWhereUniqueInput!): User
   deleteVote(where: VoteWhereUniqueInput!): Vote
   deleteLink(where: LinkWhereUniqueInput!): Link
+  deleteChatRoom(where: ChatRoomWhereUniqueInput!): ChatRoom
+  deleteMessage(where: MessageWhereUniqueInput!): Message
   deleteRoom(where: RoomWhereUniqueInput!): Room
+  deleteRequest(where: RequestWhereUniqueInput!): Request
   deleteUser(where: UserWhereUniqueInput!): User
   upsertVote(where: VoteWhereUniqueInput!, create: VoteCreateInput!, update: VoteUpdateInput!): Vote!
   upsertLink(where: LinkWhereUniqueInput!, create: LinkCreateInput!, update: LinkUpdateInput!): Link!
+  upsertChatRoom(where: ChatRoomWhereUniqueInput!, create: ChatRoomCreateInput!, update: ChatRoomUpdateInput!): ChatRoom!
+  upsertMessage(where: MessageWhereUniqueInput!, create: MessageCreateInput!, update: MessageUpdateInput!): Message!
   upsertRoom(where: RoomWhereUniqueInput!, create: RoomCreateInput!, update: RoomUpdateInput!): Room!
+  upsertRequest(where: RequestWhereUniqueInput!, create: RequestCreateInput!, update: RequestUpdateInput!): Request!
   upsertUser(where: UserWhereUniqueInput!, create: UserCreateInput!, update: UserUpdateInput!): User!
-  updateManyVotes(data: VoteUpdateInput!, where: VoteWhereInput): BatchPayload!
-  updateManyLinks(data: LinkUpdateInput!, where: LinkWhereInput): BatchPayload!
-  updateManyRooms(data: RoomUpdateInput!, where: RoomWhereInput): BatchPayload!
-  updateManyUsers(data: UserUpdateInput!, where: UserWhereInput): BatchPayload!
+  updateManyLinks(data: LinkUpdateManyMutationInput!, where: LinkWhereInput): BatchPayload!
+  updateManyChatRooms(data: ChatRoomUpdateManyMutationInput!, where: ChatRoomWhereInput): BatchPayload!
+  updateManyMessages(data: MessageUpdateManyMutationInput!, where: MessageWhereInput): BatchPayload!
+  updateManyRooms(data: RoomUpdateManyMutationInput!, where: RoomWhereInput): BatchPayload!
+  updateManyRequests(data: RequestUpdateManyMutationInput!, where: RequestWhereInput): BatchPayload!
+  updateManyUsers(data: UserUpdateManyMutationInput!, where: UserWhereInput): BatchPayload!
   deleteManyVotes(where: VoteWhereInput): BatchPayload!
   deleteManyLinks(where: LinkWhereInput): BatchPayload!
+  deleteManyChatRooms(where: ChatRoomWhereInput): BatchPayload!
+  deleteManyMessages(where: MessageWhereInput): BatchPayload!
   deleteManyRooms(where: RoomWhereInput): BatchPayload!
+  deleteManyRequests(where: RequestWhereInput): BatchPayload!
   deleteManyUsers(where: UserWhereInput): BatchPayload!
 }
 
@@ -418,15 +892,24 @@ type PageInfo {
 type Query {
   votes(where: VoteWhereInput, orderBy: VoteOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Vote]!
   links(where: LinkWhereInput, orderBy: LinkOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Link]!
+  chatRooms(where: ChatRoomWhereInput, orderBy: ChatRoomOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [ChatRoom]!
+  messages(where: MessageWhereInput, orderBy: MessageOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Message]!
   rooms(where: RoomWhereInput, orderBy: RoomOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Room]!
+  requests(where: RequestWhereInput, orderBy: RequestOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Request]!
   users(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [User]!
   vote(where: VoteWhereUniqueInput!): Vote
   link(where: LinkWhereUniqueInput!): Link
+  chatRoom(where: ChatRoomWhereUniqueInput!): ChatRoom
+  message(where: MessageWhereUniqueInput!): Message
   room(where: RoomWhereUniqueInput!): Room
+  request(where: RequestWhereUniqueInput!): Request
   user(where: UserWhereUniqueInput!): User
   votesConnection(where: VoteWhereInput, orderBy: VoteOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): VoteConnection!
   linksConnection(where: LinkWhereInput, orderBy: LinkOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): LinkConnection!
+  chatRoomsConnection(where: ChatRoomWhereInput, orderBy: ChatRoomOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): ChatRoomConnection!
+  messagesConnection(where: MessageWhereInput, orderBy: MessageOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): MessageConnection!
   roomsConnection(where: RoomWhereInput, orderBy: RoomOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): RoomConnection!
+  requestsConnection(where: RequestWhereInput, orderBy: RequestOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): RequestConnection!
   usersConnection(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): UserConnection!
 
   """Fetches an object given its ID"""
@@ -434,6 +917,279 @@ type Query {
     """The ID of an object"""
     id: ID!
   ): Node
+}
+
+type Request implements Node {
+  id: ID!
+  createdBy: User
+  requestUser: ID!
+  status: Int
+  roomId: Room
+  createdAt: DateTime!
+}
+
+"""A connection to a list of items."""
+type RequestConnection {
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """A list of edges."""
+  edges: [RequestEdge]!
+  aggregate: AggregateRequest!
+}
+
+input RequestCreateInput {
+  requestUser: ID!
+  status: Int
+  createdBy: UserCreateOneInput
+  roomId: RoomCreateOneInput
+}
+
+input RequestCreateOneInput {
+  create: RequestCreateInput
+  connect: RequestWhereUniqueInput
+}
+
+"""An edge in a connection."""
+type RequestEdge {
+  """The item at the end of the edge."""
+  node: Request!
+
+  """A cursor for use in pagination."""
+  cursor: String!
+}
+
+enum RequestOrderByInput {
+  id_ASC
+  id_DESC
+  requestUser_ASC
+  requestUser_DESC
+  status_ASC
+  status_DESC
+  createdAt_ASC
+  createdAt_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+}
+
+type RequestPreviousValues {
+  id: ID!
+  requestUser: ID!
+  status: Int
+  createdAt: DateTime!
+}
+
+type RequestSubscriptionPayload {
+  mutation: MutationType!
+  node: Request
+  updatedFields: [String!]
+  previousValues: RequestPreviousValues
+}
+
+input RequestSubscriptionWhereInput {
+  """Logical AND on all given filters."""
+  AND: [RequestSubscriptionWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [RequestSubscriptionWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [RequestSubscriptionWhereInput!]
+
+  """
+  The subscription event gets dispatched when it's listed in mutation_in
+  """
+  mutation_in: [MutationType!]
+
+  """
+  The subscription event gets only dispatched when one of the updated fields names is included in this list
+  """
+  updatedFields_contains: String
+
+  """
+  The subscription event gets only dispatched when all of the field names included in this list have been updated
+  """
+  updatedFields_contains_every: [String!]
+
+  """
+  The subscription event gets only dispatched when some of the field names included in this list have been updated
+  """
+  updatedFields_contains_some: [String!]
+  node: RequestWhereInput
+}
+
+input RequestUpdateDataInput {
+  requestUser: ID
+  status: Int
+  createdBy: UserUpdateOneInput
+  roomId: RoomUpdateOneInput
+}
+
+input RequestUpdateInput {
+  requestUser: ID
+  status: Int
+  createdBy: UserUpdateOneInput
+  roomId: RoomUpdateOneInput
+}
+
+input RequestUpdateManyMutationInput {
+  requestUser: ID
+  status: Int
+}
+
+input RequestUpdateOneInput {
+  create: RequestCreateInput
+  connect: RequestWhereUniqueInput
+  disconnect: Boolean
+  delete: Boolean
+  update: RequestUpdateDataInput
+  upsert: RequestUpsertNestedInput
+}
+
+input RequestUpsertNestedInput {
+  update: RequestUpdateDataInput!
+  create: RequestCreateInput!
+}
+
+input RequestWhereInput {
+  """Logical AND on all given filters."""
+  AND: [RequestWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [RequestWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [RequestWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+  requestUser: ID
+
+  """All values that are not equal to given value."""
+  requestUser_not: ID
+
+  """All values that are contained in given list."""
+  requestUser_in: [ID!]
+
+  """All values that are not contained in given list."""
+  requestUser_not_in: [ID!]
+
+  """All values less than the given value."""
+  requestUser_lt: ID
+
+  """All values less than or equal the given value."""
+  requestUser_lte: ID
+
+  """All values greater than the given value."""
+  requestUser_gt: ID
+
+  """All values greater than or equal the given value."""
+  requestUser_gte: ID
+
+  """All values containing the given string."""
+  requestUser_contains: ID
+
+  """All values not containing the given string."""
+  requestUser_not_contains: ID
+
+  """All values starting with the given string."""
+  requestUser_starts_with: ID
+
+  """All values not starting with the given string."""
+  requestUser_not_starts_with: ID
+
+  """All values ending with the given string."""
+  requestUser_ends_with: ID
+
+  """All values not ending with the given string."""
+  requestUser_not_ends_with: ID
+  status: Int
+
+  """All values that are not equal to given value."""
+  status_not: Int
+
+  """All values that are contained in given list."""
+  status_in: [Int!]
+
+  """All values that are not contained in given list."""
+  status_not_in: [Int!]
+
+  """All values less than the given value."""
+  status_lt: Int
+
+  """All values less than or equal the given value."""
+  status_lte: Int
+
+  """All values greater than the given value."""
+  status_gt: Int
+
+  """All values greater than or equal the given value."""
+  status_gte: Int
+  createdAt: DateTime
+
+  """All values that are not equal to given value."""
+  createdAt_not: DateTime
+
+  """All values that are contained in given list."""
+  createdAt_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  createdAt_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  createdAt_lt: DateTime
+
+  """All values less than or equal the given value."""
+  createdAt_lte: DateTime
+
+  """All values greater than the given value."""
+  createdAt_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  createdAt_gte: DateTime
+  createdBy: UserWhereInput
+  roomId: RoomWhereInput
+}
+
+input RequestWhereUniqueInput {
+  id: ID
 }
 
 type Room implements Node {
@@ -455,7 +1211,7 @@ type Room implements Node {
   minMonths: Int
   price: Int
   bills: Boolean
-  postedBy(where: UserWhereInput): User
+  postedBy: User
   images: Json!
   createdAt: DateTime!
 }
@@ -495,6 +1251,11 @@ input RoomCreateInput {
 input RoomCreateManyWithoutPostedByInput {
   create: [RoomCreateWithoutPostedByInput!]
   connect: [RoomWhereUniqueInput!]
+}
+
+input RoomCreateOneInput {
+  create: RoomCreateInput
+  connect: RoomWhereUniqueInput
 }
 
 input RoomCreateWithoutPostedByInput {
@@ -634,6 +1395,28 @@ input RoomSubscriptionWhereInput {
   node: RoomWhereInput
 }
 
+input RoomUpdateDataInput {
+  title: String
+  description: String
+  city: String
+  address: String
+  latLng: Json
+  country: String
+  amenities: Json
+  type: String
+  males: Int
+  females: Int
+  rules: Json
+  bed: String
+  fromDate: DateTime
+  toDate: DateTime
+  minMonths: Int
+  price: Int
+  bills: Boolean
+  images: Json
+  postedBy: UserUpdateOneWithoutRoomsInput
+}
+
 input RoomUpdateInput {
   title: String
   description: String
@@ -656,6 +1439,27 @@ input RoomUpdateInput {
   postedBy: UserUpdateOneWithoutRoomsInput
 }
 
+input RoomUpdateManyMutationInput {
+  title: String
+  description: String
+  city: String
+  address: String
+  latLng: Json
+  country: String
+  amenities: Json
+  type: String
+  males: Int
+  females: Int
+  rules: Json
+  bed: String
+  fromDate: DateTime
+  toDate: DateTime
+  minMonths: Int
+  price: Int
+  bills: Boolean
+  images: Json
+}
+
 input RoomUpdateManyWithoutPostedByInput {
   create: [RoomCreateWithoutPostedByInput!]
   connect: [RoomWhereUniqueInput!]
@@ -663,6 +1467,15 @@ input RoomUpdateManyWithoutPostedByInput {
   delete: [RoomWhereUniqueInput!]
   update: [RoomUpdateWithWhereUniqueWithoutPostedByInput!]
   upsert: [RoomUpsertWithWhereUniqueWithoutPostedByInput!]
+}
+
+input RoomUpdateOneInput {
+  create: RoomCreateInput
+  connect: RoomWhereUniqueInput
+  disconnect: Boolean
+  delete: Boolean
+  update: RoomUpdateDataInput
+  upsert: RoomUpsertNestedInput
 }
 
 input RoomUpdateWithoutPostedByDataInput {
@@ -689,6 +1502,11 @@ input RoomUpdateWithoutPostedByDataInput {
 input RoomUpdateWithWhereUniqueWithoutPostedByInput {
   where: RoomWhereUniqueInput!
   data: RoomUpdateWithoutPostedByDataInput!
+}
+
+input RoomUpsertNestedInput {
+  update: RoomUpdateDataInput!
+  create: RoomCreateInput!
 }
 
 input RoomUpsertWithWhereUniqueWithoutPostedByInput {
@@ -1194,7 +2012,10 @@ input RoomWhereUniqueInput {
 type Subscription {
   vote(where: VoteSubscriptionWhereInput): VoteSubscriptionPayload
   link(where: LinkSubscriptionWhereInput): LinkSubscriptionPayload
+  chatRoom(where: ChatRoomSubscriptionWhereInput): ChatRoomSubscriptionPayload
+  message(where: MessageSubscriptionWhereInput): MessageSubscriptionPayload
   room(where: RoomSubscriptionWhereInput): RoomSubscriptionPayload
+  request(where: RequestSubscriptionWhereInput): RequestSubscriptionPayload
   user(where: UserSubscriptionWhereInput): UserSubscriptionPayload
 }
 
@@ -1265,6 +2086,11 @@ input UserCreateInput {
   rooms: RoomCreateManyWithoutPostedByInput
   links: LinkCreateManyWithoutPostedByInput
   votes: VoteCreateManyWithoutUserInput
+}
+
+input UserCreateOneInput {
+  create: UserCreateInput
+  connect: UserWhereUniqueInput
 }
 
 input UserCreateOneWithoutLinksInput {
@@ -1496,6 +2322,35 @@ input UserSubscriptionWhereInput {
   node: UserWhereInput
 }
 
+input UserUpdateDataInput {
+  firstName: String
+  lastName: String
+  role: Int
+  email: String
+  password: String
+  facebookId: String
+  isVerified: Boolean
+  token: String
+  passwordResetToken: String
+  passwordResetExpires: DateTime
+  birthDay: DateTime
+  gender: String
+  occupation: String
+  studying: String
+  working: String
+  images: Json
+  languages: Json
+  userPersonality: Json
+  userLifeStyle: Json
+  userMusic: Json
+  userSports: Json
+  userMovies: Json
+  userExtra: String
+  rooms: RoomUpdateManyWithoutPostedByInput
+  links: LinkUpdateManyWithoutPostedByInput
+  votes: VoteUpdateManyWithoutUserInput
+}
+
 input UserUpdateInput {
   firstName: String
   lastName: String
@@ -1523,6 +2378,41 @@ input UserUpdateInput {
   rooms: RoomUpdateManyWithoutPostedByInput
   links: LinkUpdateManyWithoutPostedByInput
   votes: VoteUpdateManyWithoutUserInput
+}
+
+input UserUpdateManyMutationInput {
+  firstName: String
+  lastName: String
+  role: Int
+  email: String
+  password: String
+  facebookId: String
+  isVerified: Boolean
+  token: String
+  passwordResetToken: String
+  passwordResetExpires: DateTime
+  birthDay: DateTime
+  gender: String
+  occupation: String
+  studying: String
+  working: String
+  images: Json
+  languages: Json
+  userPersonality: Json
+  userLifeStyle: Json
+  userMusic: Json
+  userSports: Json
+  userMovies: Json
+  userExtra: String
+}
+
+input UserUpdateOneInput {
+  create: UserCreateInput
+  connect: UserWhereUniqueInput
+  disconnect: Boolean
+  delete: Boolean
+  update: UserUpdateDataInput
+  upsert: UserUpsertNestedInput
 }
 
 input UserUpdateOneRequiredWithoutVotesInput {
@@ -1632,6 +2522,11 @@ input UserUpdateWithoutVotesDataInput {
   userExtra: String
   rooms: RoomUpdateManyWithoutPostedByInput
   links: LinkUpdateManyWithoutPostedByInput
+}
+
+input UserUpsertNestedInput {
+  update: UserUpdateDataInput!
+  create: UserCreateInput!
 }
 
 input UserUpsertWithoutLinksInput {
@@ -2267,8 +3162,8 @@ input UserWhereUniqueInput {
 
 type Vote implements Node {
   id: ID!
-  link(where: LinkWhereInput): Link!
-  user(where: UserWhereInput): User!
+  link: Link!
+  user: User!
 }
 
 """A connection to a list of items."""

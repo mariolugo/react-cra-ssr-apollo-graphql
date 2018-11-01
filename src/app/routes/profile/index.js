@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 // import { frontloadConnect } from 'react-frontload';
-import { compose, graphql } from "react-apollo";
+import { compose, graphql, Query } from "react-apollo";
 import { withStyles } from "@material-ui/core/styles";
 import gql from "graphql-tag";
 import Paper from "@material-ui/core/Paper";
@@ -38,6 +38,10 @@ import HeadsetIcon from "@material-ui/icons/Headset";
 import FitnessCenterIcon from "@material-ui/icons/FitnessCenter";
 import MovieFilterIcon from "@material-ui/icons/MovieFilter";
 import Snackbar from "@material-ui/core/Snackbar";
+import Card from "@material-ui/core/Card";
+import CardActions from "@material-ui/core/CardActions";
+import CardContent from "@material-ui/core/CardContent";
+import CardMedia from "@material-ui/core/CardMedia";
 
 import {
   getCurrentProfile,
@@ -104,6 +108,24 @@ const UPDATE_TAGS = gql`
       email
       facebookId
       isVerified
+    }
+  }
+`;
+
+const USER_ROOMS_QUERY = gql`
+  query GetUserRooms {
+    getUserRooms {
+      rooms {
+        id
+        images
+        title
+        price
+        postedBy {
+          firstName
+          images
+          birthDay
+        }
+      }
     }
   }
 `;
@@ -318,7 +340,7 @@ class Profile extends Component {
       toastMessage,
       totalDone
     } = this.state;
-    const { classes, ...rest } = this.props;
+    const { classes, history, ...rest } = this.props;
     const {
       userPersonality,
       userLifeStyle,
@@ -676,6 +698,60 @@ class Profile extends Component {
               </Paper>
             )}
 
+          <Query query={USER_ROOMS_QUERY} ssr={false}>
+            {({ loading, error, data, subscribeToMore }) => {
+              if (loading) return null;
+              if (error) return <div>Error</div>;
+
+              console.log(data);
+
+              const linksToRender = data.getUserRooms.rooms;
+              console.log(linksToRender);
+              if (linksToRender.length === 0) return null;
+
+              return (
+                <Paper className={classes.paperRight}>
+                  <Grid container spacing={16} className={classes.paddingSides10}>
+                     <Grid item xs={12}>
+                         <Typography variant="title" gutterBottom align="left">
+                           Mis cuartos publicados
+                         </Typography>
+                     </Grid>
+                    {linksToRender.map((room, index) => (
+                      <Grid
+                        item
+                        key={index}
+                        sm={6}
+                        md={4}
+                        lg={3}
+                        onClick={() => history.push(`/room/${room.id}`)}
+                      >
+                        <Card className={classes.card}>
+                          <CardMedia
+                            className={classes.cardMedia}
+                            image={room.images[0]}
+                            title={"room title"}
+                          />
+                          <CardContent className={classes.cardContent}>
+                            <Typography>{room.title}</Typography>
+                          </CardContent>
+                          <CardActions>
+                            <Button
+                              size="small"
+                              color="primary"
+                              onClick={() => history.push(`/room/${room.id}`)}
+                            >
+                              View
+                            </Button>
+                          </CardActions>
+                        </Card>
+                      </Grid>
+                    ))}
+                  </Grid>
+                </Paper>
+              );
+            }}
+          </Query>
           {typeof user.userPersonality !== "undefined" &&
             Array.isArray(user.userPersonality) &&
             user.userPersonality.length > 0 && (
@@ -1412,6 +1488,20 @@ const styles = theme => ({
   textSubDrawer: {
     paddingLeft: 15,
     marginBottom: 20
+  },
+  cardGrid: {
+    padding: `${theme.spacing.unit * 8}px 0`
+  },
+  card: {
+    height: "100%",
+    display: "flex",
+    flexDirection: "column"
+  },
+  cardMedia: {
+    paddingTop: "56.25%" // 16:9
+  },
+  cardContent: {
+    flexGrow: 1
   }
 });
 

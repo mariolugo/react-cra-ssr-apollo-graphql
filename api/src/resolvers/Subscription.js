@@ -20,7 +20,32 @@ const newVote = {
   },
 }
 
+
+function newMessageSubscribe (parent, args, context, info) {
+  return context.db.subscription.message(
+    { where: { mutation_in: ['CREATED'] } },
+    info,
+  )
+}
+
+const newMessage = {
+  subscribe: newMessageSubscribe
+}
+
+function newRequestSubscribe(parent, args, contexdt, info) {
+    return context.db.subscription.request(
+        { where: { mutation_in: ['CREATED'] } },
+        info,
+    )
+}
+
+const newRequest = {
+    subscribe: newMessageSubscribe
+}
+
 module.exports = {
   newLink,
   newVote,
+  newMessage,
+  newRequest
 }

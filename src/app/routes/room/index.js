@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Query, compose, graphql } from "react-apollo";
+import { Query, compose, graphql, Mutation } from "react-apollo";
 import { withStyles } from "@material-ui/core/styles";
 import gql from "graphql-tag";
 import Page from "../../components/page";
@@ -11,6 +11,8 @@ import Divider from "@material-ui/core/Divider";
 import GoogleMapsComponent from "../list-room/GoogleMapsComponent";
 import { Circle } from "react-google-maps";
 import Chip from "@material-ui/core/Chip";
+import Cookies from "js-cookie";
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 const GET_ROOM_QUERY = gql`
   query GetRoom($id: String!) {
@@ -56,6 +58,42 @@ const GET_ROOM_QUERY = gql`
   }
 `;
 
+const GET_REQUEST_QUERY = gql`
+  query GetRequest($createdBy: ID, $roomId: ID){
+    getRoomRequest(createdBy: $createdBy, roomId: $roomId){
+      createdBy {
+          id
+      }
+      roomId {
+          id
+      }
+    }
+  }
+`;
+
+const CREATE_REQUEST_MUTATION = gql`
+  mutation CreateRequestMutation(
+    $createdBy: ID
+    $requestUser: ID
+    $roomId: ID
+  ) {
+    createRequest(
+      createdBy: $createdBy
+      requestUser: $requestUser
+      roomId: $roomId
+    ) {
+      createdBy {
+          id
+      }
+      requestUser
+      roomId {
+          id
+      }
+      createdAt
+    }
+  }
+`;
+
 class Room extends Component {
   state = {
     roomId: "",
@@ -64,16 +102,50 @@ class Room extends Component {
     room: {},
     currentImage: 0,
     zoom: 15,
-    map: {}
+    map: {},
+    alreadyRequested: false
   };
 
   componentWillMount() {
     const { match } = this.props;
 
-    this.setState({
-      roomId: match.params.id,
-      loading: false
-    });
+    let user = Cookies.getJSON("br_user");
+    Cookies.set("br_user", user);
+
+
+
+    if (user) {
+      this.setState({
+        roomId: match.params.id,
+        currentUser: user,
+        loading: false
+      });
+
+      console.log(this.props.getRequestQuery);
+      this.props.getRequestQuery.refetch({
+        roomId: match.params.id,
+        createdBy: user.id
+      })
+      .then(response => {
+        console.log('get request response', response);
+        if (response.data.getRoomRequest !== null) {
+          this.setState({
+            alreadyRequested: true
+          });
+        }
+
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+
+    } else {
+      this.setState({
+        roomId: match.params.id,
+        currentUser: null,
+        loading: false
+      });
+    }
   }
 
   closeLightbox() {
@@ -120,7 +192,16 @@ class Room extends Component {
   }
 
   render() {
-    const { roomId, loading, lightboxIsOpen, currentImage, zoom } = this.state;
+    const {
+      roomId,
+      loading,
+      lightboxIsOpen,
+      currentImage,
+      zoom,
+      currentUser,
+      alreadyRequested
+    } = this.state;
+
     const { classes } = this.props;
     if (loading) return <p>cargando pagina</p>;
 
@@ -133,6 +214,8 @@ class Room extends Component {
       fillColor: "#AA0000",
       strokeColor: "transparent"
     };
+
+    let createdBy =  currentUser.id;
 
     return (
       <Page
@@ -162,6 +245,8 @@ class Room extends Component {
             if (typeof user.birthDay !== "undefined" && user.birthDay) {
               birthDayUsr = this._calculateAge(new Date(user.birthDay));
             }
+
+            let requestUser = user.id;
 
             return (
               <div className={classes.room}>
@@ -218,15 +303,45 @@ class Room extends Component {
                           </Typography>
                         </Typography>
                       </Grid>
-                      <Grid item xs={12} sm={6}>
-                        <Button
-                          variant="outlined"
-                          color="primary"
-                          className={classes.button}
-                        >
-                          Send request
-                        </Button>
-                      </Grid>
+                      {(user.id !== currentUser.id) && alreadyRequested &&
+                        <Grid item xs={12} sm={6}>
+                          <div>Request enviado</div>
+                        </Grid>
+                      }
+                      {(user.id !== currentUser.id) && !alreadyRequested && (
+                        <Grid item xs={12} sm={6}>
+
+                          <Mutation
+                            mutation={CREATE_REQUEST_MUTATION}
+                            variables={{ createdBy, requestUser, roomId }}
+                            onCompleted={data => this.setState({alreadyRequested: true})}
+                          >
+                            {(mutation, { loading, error }) => {
+                              if (loading)
+                                return (
+                                  <CircularProgress
+                                    className={classes.progress}
+                                    size={50}
+                                  />
+                                );
+                              if (error) console.log('terminado');
+                              return (
+
+                                <Button
+                                  variant="outlined"
+                                  color="primary"
+                                  className={classes.button}
+                                  onClick={mutation}
+                                >
+                                  Send request
+                                </Button>
+                              );
+                            }}
+                          </Mutation>
+
+
+                        </Grid>
+                      )}
                     </Grid>
                   </div>
                 </div>
@@ -507,10 +622,18 @@ class Room extends Component {
                                     </Typography>
                                   </div>
                                 )}
-                              <Typography variant="title" gutterBottom align="left" style={{ marginTop: 20 }}>
+                              <Typography
+                                variant="title"
+                                gutterBottom
+                                align="left"
+                                style={{ marginTop: 20 }}
+                              >
                                 Personalidad
                               </Typography>
-                              <div className={classes.chips} style={{ marginBottom: 10 }}>
+                              <div
+                                className={classes.chips}
+                                style={{ marginBottom: 10 }}
+                              >
                                 {user.userPersonality.length > 0 &&
                                   user.userPersonality.map((tag, index) => {
                                     return (
@@ -523,10 +646,18 @@ class Room extends Component {
                                     );
                                   })}
                               </div>
-                              <Typography variant="title" gutterBottom align="left" style={{ marginTop: 20 }}>
+                              <Typography
+                                variant="title"
+                                gutterBottom
+                                align="left"
+                                style={{ marginTop: 20 }}
+                              >
                                 Estilo de vida
                               </Typography>
-                              <div className={classes.chips} style={{ marginBottom: 10 }}>
+                              <div
+                                className={classes.chips}
+                                style={{ marginBottom: 10 }}
+                              >
                                 {user.userLifeStyle.length > 0 &&
                                   user.userLifeStyle.map((tag, index) => {
                                     return (
@@ -539,10 +670,18 @@ class Room extends Component {
                                     );
                                   })}
                               </div>
-                              <Typography variant="title" gutterBottom align="left" style={{ marginTop: 20 }}>
+                              <Typography
+                                variant="title"
+                                gutterBottom
+                                align="left"
+                                style={{ marginTop: 20 }}
+                              >
                                 Gustos musicales
                               </Typography>
-                              <div className={classes.chips} style={{ marginBottom: 10 }}>
+                              <div
+                                className={classes.chips}
+                                style={{ marginBottom: 10 }}
+                              >
                                 {user.userMusic.length > 0 &&
                                   user.userMusic.map((tag, index) => {
                                     return (
@@ -555,10 +694,18 @@ class Room extends Component {
                                     );
                                   })}
                               </div>
-                              <Typography variant="title" gutterBottom align="left" style={{ marginTop: 20 }}>
+                              <Typography
+                                variant="title"
+                                gutterBottom
+                                align="left"
+                                style={{ marginTop: 20 }}
+                              >
                                 Deportes
                               </Typography>
-                              <div className={classes.chips} style={{ marginBottom: 10 }}>
+                              <div
+                                className={classes.chips}
+                                style={{ marginBottom: 10 }}
+                              >
                                 {user.userSports.length > 0 &&
                                   user.userSports.map((tag, index) => {
                                     return (
@@ -571,10 +718,18 @@ class Room extends Component {
                                     );
                                   })}
                               </div>
-                              <Typography variant="title" gutterBottom align="left" style={{ marginTop: 20 }}>
+                              <Typography
+                                variant="title"
+                                gutterBottom
+                                align="left"
+                                style={{ marginTop: 20 }}
+                              >
                                 Películas
                               </Typography>
-                              <div className={classes.chips} style={{ marginBottom: 10 }}>
+                              <div
+                                className={classes.chips}
+                                style={{ marginBottom: 10 }}
+                              >
                                 {user.userMovies.length > 0 &&
                                   user.userMovies.map((tag, index) => {
                                     return (
@@ -775,4 +930,9 @@ const styles = theme => ({
   }
 });
 
-export default compose(withStyles(styles))(Room);
+export default compose(
+  withStyles(styles),
+  graphql(GET_REQUEST_QUERY, {
+    name: "getRequestQuery"
+  })
+)(Room);

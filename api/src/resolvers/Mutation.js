@@ -250,8 +250,6 @@ async function editUserTags(parent, args, ctx, info) {
 async function postRoom(parent, args, ctx, info) {
   const userId = getUserId(ctx);
 
-  console.log({args});
-
   return ctx.db.mutation.createRoom({
     data: {
       ...args,
@@ -264,6 +262,81 @@ async function postRoom(parent, args, ctx, info) {
   }, info);
 }
 
+async function createRequest(parent, args, ctx, info) {
+    const userId = getUserId(ctx);
+
+    let createdAt = new Date();
+
+    return ctx.db.mutation.createRequest({
+        data: {
+            requestUser: args.requestUser,
+            roomId: {
+              connect: {
+                id: args.roomId
+              }
+            },
+            createdBy: {
+                connect: {
+                    id: args.createdBy
+                }
+            }
+        }
+    }, info);
+}
+
+async function updateRequest(parent, args, ctx, info) {
+
+  const { id, status } = args;
+
+  const updateRequest = await ctx.db.mutation.updateRequest({
+    data: {
+      status
+    },
+    where: { id: id }
+  }, info);
+
+  console.log(updateRequest);
+
+  return updateRequest;
+}
+
+async function createChatRoom(parent, args, ctx, info) {
+  const owner = getUserId(ctx);
+
+  const { room, request, withUser } = args;
+
+  return ctx.db.mutation.createChatRoom({
+      data: {
+          room,
+          owner,
+          withUser,
+          request
+      }
+  }, info);
+}
+
+async function createMessage(parent, args, ctx, info){
+  const author = getUserId(ctx);
+
+  const { chat, message } = args;
+
+  return ctx.db.mutation.createMessage({
+      data: {
+          author: {
+            connect: {
+              id: author
+            }
+          },
+          chat: {
+            connect: {
+              id: chat
+            }
+          },
+          message
+      }
+  }, info);
+}
+
 module.exports = {
   post,
   signup,
@@ -273,5 +346,9 @@ module.exports = {
   editUser,
   facebookConnect,
   editUserTags,
-  postRoom
+  postRoom,
+  createRequest,
+  createChatRoom,
+  updateRequest,
+  createMessage
 }

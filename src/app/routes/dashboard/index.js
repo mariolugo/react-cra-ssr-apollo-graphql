@@ -15,6 +15,8 @@ import Tab from "@material-ui/core/Tab";
 import "./dashboard.css";
 import Badge from "@material-ui/core/Badge";
 import Profile from "../profile";
+import RequestsComponent from './RequestsComponent';
+import ChatComponent from './ChatComponent';
 
 class Dashboard extends React.Component {
   state = {
@@ -28,6 +30,7 @@ class Dashboard extends React.Component {
   render() {
     const { currentUser, classes, ...rest } = this.props;
     const { value } = this.state;
+    console.log('value',value);
     return (
       <Page
         id="dashboard"
@@ -58,18 +61,14 @@ class Dashboard extends React.Component {
                   className={classes.paddingTop5}
                   label="Solicitudes"
                   icon={
-                    <Badge badgeContent={4} color="primary">
                       <FeedbackIcon />
-                    </Badge>
                   }
                 />
                 <Tab
                   className={classes.paddingTop5}
                   label="Chats"
                   icon={
-                    <Badge badgeContent={2} color="primary">
                       <ChatIcon />
-                    </Badge>
                   }
                 />
                 <Tab
@@ -80,14 +79,25 @@ class Dashboard extends React.Component {
               </Tabs>
             </Grid>
           </div>
-
-          <Profile {...rest} />
+          {value === 0 &&   <Profile {...rest} />}
+          {value === 2 &&  <RequestsComponent {...rest}/>}
+          {value === 3 &&  <ChatComponent {...rest}/>}
           <Divider className={classes.divider} />
         </div>
       </Page>
     );
   }
 }
+
+// <Tab
+//   className={classes.paddingTop5}
+//   label="Chats"
+//   icon={
+//     <Badge badgeContent={2} color="primary">
+//       <ChatIcon />
+//     </Badge>
+//   }
+// />
 
 const mapStateToProps = state => ({
   currentUser: state.auth.currentUser

@@ -1,13 +1,23 @@
-# import Link, Room, Vote, LinkSubscriptionPayload, VoteSubscriptionPayload, RoomOrderByInput from "./generated/prisma.graphql"
+# import Link, Room, Vote, Request, ChatRoom, Message, LinkSubscriptionPayload, VoteSubscriptionPayload, MessageSubscriptionPayload, RoomOrderByInput from "./generated/prisma.graphql"
 
 type Query {
   feed(filter: String, latLng: String, skip: Int, first: Int, orderBy: RoomOrderByInput, radius: String, maxPrice: Int, amenities: Json, bed: String): Feed!
   getRoom(id: String): Room!
+  getRoomRequest(createdBy: ID, roomId: ID): Request
+  getUserRooms: UserRooms!
+  getUserRequests(requestUser: ID, status: Int): [Request!]!
+  getUserSentRequests(createdBy: ID, status: Int): [Request!]!
+  getChatRooms(owner: ID): [ChatRoom!]!
+  getMessages(chat: ID): [Message!]!
 }
 
 type Feed {
   rooms: [Room!]!
   count: Int!
+}
+
+type UserRooms {
+  rooms: [Room!]!
 }
 
 type Mutation {
@@ -20,6 +30,10 @@ type Mutation {
   facebookConnect(code: String!): User
   editUserTags(userPersonality: [String!], userLifeStyle: [String!], userMusic: [String!], userSports: [String!], userMovies: [String!]): User
   postRoom(title: String!, description: String!, city: String!, address: String!, country: String!, latLng: Json, amenities: [String!], type: String!, males: Int, females: Int, rules: [String!], bed: String, fromDate: DateTime, toDate: DateTime, minMonths: Int, price: Int, bills: Boolean, images: [String!]): Room!
+  createRequest(createdBy: ID, requestUser: ID, roomId: ID): Request!
+  updateRequest(id: ID, status: Int): Request
+  createChatRoom(room: ID, request: ID, withUser: ID): ChatRoom!
+  createMessage(chat: ID, message: String): Message
 }
 
 type AuthPayload {
@@ -30,4 +44,6 @@ type AuthPayload {
 type Subscription {
   newLink: LinkSubscriptionPayload
   newVote: VoteSubscriptionPayload
+  newMessage: MessageSubscriptionPayload
+  newRequest: RequestSubscriptionPayload
 }
